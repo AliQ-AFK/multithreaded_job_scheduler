@@ -16,13 +16,21 @@ job* initialize_job(int* num_users, int* num_jobs) {
         
         fread(jobs, sizeof(job), *num_jobs, file);
         fclose(file);
+
+        // Debugging: Print job details to confirm they are read correctly
+        printf("Number of users: %d\n", *num_users);
+        printf("Number of jobs: %d\n", *num_jobs);
+        for (int i = 0; i < *num_jobs; i++) {
+            printf("Job %d: User ID = %d, Type = %s, Pages = %d, Arrival Time = %u\n",
+                   i, jobs[i].user_id, jobs[i].job_type, jobs[i].page, jobs[i].arrival_time);
+        }
         return jobs;
     }
 
     // If no file exists, create new jobs
-    if (printf("Enter the number of users:\n") < 0) return NULL;
+    printf("Enter the number of users:\n");
     if (scanf("%d", num_users) != 1) return NULL;
-    if (printf("Enter the number of jobs per user:\n") < 0) return NULL;
+    printf("Enter the number of jobs per user:\n");
     if (scanf("%d", num_jobs) != 1) return NULL;
 
     // Calculate total number of jobs (users * jobs per user)
@@ -42,6 +50,14 @@ job* initialize_job(int* num_users, int* num_jobs) {
             jobs[job_index].page = rand() % 50 + 1;
             jobs[job_index].arrival_time = rand() % MAX_TIME + 1;
         }
+    }
+
+    // Debugging: Print job details to confirm they are created correctly
+    printf("Number of users: %d\n", *num_users);
+    printf("Number of jobs: %d\n", *num_jobs);
+    for (int i = 0; i < total_jobs; i++) {
+        printf("Job %d: User ID = %d, Type = %s, Pages = %d, Arrival Time = %u\n",
+               i, jobs[i].user_id, jobs[i].job_type, jobs[i].page, jobs[i].arrival_time);
     }
 
     // Update total number of jobs
