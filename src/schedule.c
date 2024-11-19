@@ -26,7 +26,11 @@ void schedule_jobs(job* jobs, int num_jobs)
                 printf("Skipping time forward from %u to %u\n", elapsed_time, next_arrival_time);
                 elapsed_time = next_arrival_time;
             }
-            continue;  // Skip the rest of the loop and check again
+            else {
+                // No more jobs to process, break out of the loop
+                break;
+            }
+            continue;
         }
 
         if (selected_print_index != -1)
@@ -37,6 +41,8 @@ void schedule_jobs(job* jobs, int num_jobs)
 
             if (jobs[selected_print_index].page <= 0)
             {
+                printf("Completed print job for User %d\n", jobs[selected_print_index].user_id);
+                fflush(stdout);
                 num_jobs--;
             }
         }
@@ -49,6 +55,8 @@ void schedule_jobs(job* jobs, int num_jobs)
 
             if (jobs[selected_scan_index].page <= 0)
             {
+                printf("Completed scan job for User %d\n", jobs[selected_scan_index].user_id);
+                fflush(stdout);
                 num_jobs--;
             }
         }
