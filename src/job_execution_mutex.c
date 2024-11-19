@@ -1,15 +1,19 @@
 #include "utils.h"
 
-void schedule_jobs(job* jobs, int num_jobs)
+void mutex(job* jobs, int num_jobs)
 {
     unsigned int elapsed_time = 0;
     printf("\nJob Queue:\n");
     printf("----------------------------------------------------------\n");
     printf("| User ID | Type  | Pages     | Time (s)  | Status       |\n");
     printf("----------------------------------------------------------\n");
+    fflush(stdout);  // Force flush
 
     while (num_jobs > 0)
     {
+        printf("Checking for jobs at elapsed time: %u\n", elapsed_time);
+        fflush(stdout);  // Force flush
+
         int selected_print_index = find_next_job(jobs, num_jobs, "print", elapsed_time);
         int selected_scan_index = find_next_job(jobs, num_jobs, "scan", elapsed_time);
 
@@ -19,6 +23,7 @@ void schedule_jobs(job* jobs, int num_jobs)
                    jobs[selected_print_index].user_id,
                    jobs[selected_print_index].job_type,
                    elapsed_time);
+            fflush(stdout);  // Force flush
 
             int pages_to_process = (jobs[selected_print_index].page >= TIME_SLICE) ? 
                                    TIME_SLICE : jobs[selected_print_index].page;
@@ -29,8 +34,14 @@ void schedule_jobs(job* jobs, int num_jobs)
                 printf("Completed: User %d's %s job\n",
                        jobs[selected_print_index].user_id,
                        jobs[selected_print_index].job_type);
+                fflush(stdout);  // Force flush
                 num_jobs--;
             }
+        }
+        else
+        {
+            printf("No print job selected.\n");
+            fflush(stdout);  // Force flush
         }
 
         if (selected_scan_index != -1)
@@ -39,6 +50,7 @@ void schedule_jobs(job* jobs, int num_jobs)
                    jobs[selected_scan_index].user_id,
                    jobs[selected_scan_index].job_type,
                    elapsed_time);
+            fflush(stdout);  // Force flush
 
             int pages_to_process = (jobs[selected_scan_index].page >= TIME_SLICE) ? 
                                    TIME_SLICE : jobs[selected_scan_index].page;
@@ -49,8 +61,14 @@ void schedule_jobs(job* jobs, int num_jobs)
                 printf("Completed: User %d's %s job\n",
                        jobs[selected_scan_index].user_id,
                        jobs[selected_scan_index].job_type);
+                fflush(stdout);  // Force flush
                 num_jobs--;
             }
+        }
+        else
+        {
+            printf("No scan job selected.\n");
+            fflush(stdout);  // Force flush
         }
 
         elapsed_time += TIME_SLICE;
@@ -59,18 +77,5 @@ void schedule_jobs(job* jobs, int num_jobs)
 
     printf("----------------------------------------------------------\n");
     printf("Success: All jobs completed!\n");
-}
-
-int find_next_job(job* jobs, int num_jobs, const char* type, int elapsed_time)
-{
-    for (int i = 0; i < num_jobs; i++)
-    {
-        if (jobs[i].page > 0 && 
-            strcmp(jobs[i].job_type, type) == 0 && 
-            jobs[i].arrival_time <= (unsigned int)elapsed_time)
-        {
-            return i;
-        }
-    }
-    return -1;
+    fflush(stdout);  // Force flush
 }
