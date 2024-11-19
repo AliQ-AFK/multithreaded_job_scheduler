@@ -33,5 +33,9 @@ void print_job_status(job* current_job, int elapsed_time, const char* status);
 void print_job_progress(job* current_job, int pages_processed);
 void print_job_completion(job* current_job);
 int find_next_job(job* jobs, int num_jobs, const char* type, int elapsed_time);
-
+// Function declarations for different job scheduling modes
+void schedule_jobs_unsync(job* jobs, int num_jobs);       // For unsynchronized scheduling
+void schedule_jobs_mutex(job* jobs, int num_jobs);        // For mutex-synchronized scheduling
+void schedule_jobs_semaphore(job* jobs, int num_jobs);    // For semaphore-synchronized scheduling
+void schedule_jobs(job* jobs, int num_jobs); 
 #endif 

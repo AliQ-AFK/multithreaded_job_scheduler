@@ -13,8 +13,4 @@ typedef struct
     int    completion_time;
 } job;
 job *initialize_job(int* num_users, int* num_jobs);
-void schedule_jobs(job* jobs, int num_jobs);
-void schedule_jobs_unsync(job* jobs, int num_jobs);
-void schedule_jobs_mutex(job* jobs, int num_jobs);
-void schedule_jobs_semaphore(job* jobs, int num_jobs);
 #endif
