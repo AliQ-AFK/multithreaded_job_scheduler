@@ -1,6 +1,6 @@
 #include "utils.h"
 
-void print_job_header(void) {
+/*void print_job_header(void) {
     printf("\n%sJob Queue:%s\n", ANSI_COLOR_YELLOW, ANSI_COLOR_RESET);
     printf("----------------------------------------------------------\n");
     printf("| %-8s | %-6s | %-10s | %-9s | %-13s |\n", 
@@ -42,14 +42,26 @@ void print_job_completion(job* current_job) {
            current_job->job_type,
            ANSI_COLOR_RESET);
 }
-
+*/
 int find_next_job(job* jobs, int num_jobs, const char* type, int elapsed_time) {
+    printf("Finding next job of type %s at elapsed time %u\n", type, elapsed_time);
+    fflush(stdout);
+
     for (int i = 0; i < num_jobs; i++) {
-        if (jobs[i].page > 0 && 
-            strcmp(jobs[i].job_type, type) == 0 && 
-            jobs[i].arrival_time <= (unsigned int) elapsed_time) {
+        printf("Checking job %d: Type = %s, Pages = %d, Arrival Time = %u\n",
+               i, jobs[i].job_type, jobs[i].page, jobs[i].arrival_time);
+        fflush(stdout);
+
+        if (jobs[i].page > 0 &&
+            strcmp(jobs[i].job_type, type) == 0 &&
+            jobs[i].arrival_time <= (unsigned int)elapsed_time) {
+            printf("Selected job %d\n", i);
+            fflush(stdout);
             return i;
         }
     }
+    printf("No job found\n");
+    fflush(stdout);
     return -1;
 }
+
