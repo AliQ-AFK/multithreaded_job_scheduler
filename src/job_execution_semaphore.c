@@ -1,4 +1,4 @@
-#include "utils.h"
+/*#include "utils.h"
 
 // Semaphores to protect critical sections
 sem_t print_semaphore;
@@ -106,3 +106,4 @@ void schedule_jobs_semaphore(job* jobs, int num_jobs) {
     free(threads);
 }
 
+*/

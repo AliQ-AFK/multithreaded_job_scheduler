@@ -1,4 +1,4 @@
-#include "utils.h"
+/*#include "utils.h"
 
 int job_count = 0;  // No protection - will cause race conditions (intentionally)
 
@@ -68,3 +68,4 @@ void schedule_jobs_unsync(job* jobs, int num_jobs) {
 
     free(threads);
 }
+*/
