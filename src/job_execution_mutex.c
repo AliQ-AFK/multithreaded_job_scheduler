@@ -1,108 +1,78 @@
 #include "utils.h"
+#include <pthread.h>
 
-void mutex(job* jobs, int num_jobs)
+// Declare and initialize two mutexes
+pthread_mutex_t print_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t scan_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+// Function to create and join threads
+void create_and_run_threads(job* jobs, int num_jobs)
 {
-    unsigned int elapsed_time = 0;
-    printf("\nJob Queue:\n");
-    printf("----------------------------------------------------------\n");
-    printf("| User ID | Type  | Pages     | Time (s)  | Status       |\n");
-    printf("----------------------------------------------------------\n");
-    fflush(stdout);  // Force flush
+    pthread_t print_thread, scan_thread;
 
-    // Print the initial number of jobs
-    printf("Initial number of jobs: %d\n", num_jobs);
-    fflush(stdout);
+    // Create threads
+    pthread_create(&print_thread, NULL, print_job_thread, (void*)jobs);
+    pthread_create(&scan_thread, NULL, scan_job_thread, (void*)jobs);
+
+    // Join threads
+    pthread_join(print_thread, NULL);
+    pthread_join(scan_thread, NULL);
+}
+
+// Function to handle print jobs using mutex
+void* print_job_thread(void* arg)
+{
+    job* jobs = (job*)arg;
+    unsigned int elapsed_time = 0;
+    int num_jobs = get_total_jobs();  // Adjust this to get the total number of jobs
 
     while (num_jobs > 0)
     {
-        printf("Entering the main loop with %d jobs remaining\n", num_jobs);
-        fflush(stdout);  // Force flush
-
-        printf("Checking for jobs at elapsed time: %u\n", elapsed_time);
-        fflush(stdout);  // Force flush
-
+        pthread_mutex_lock(&print_mutex);
+        // Find and process print jobs
         int selected_print_index = find_next_job(jobs, num_jobs, "print", elapsed_time);
-        int selected_scan_index = find_next_job(jobs, num_jobs, "scan", elapsed_time);
-
-        // Debugging output for job selection
-        printf("Selected print index: %d\n", selected_print_index);
-        printf("Selected scan index: %d\n", selected_scan_index);
-        fflush(stdout);  // Force flush
-
         if (selected_print_index != -1)
         {
-            printf("Processing: User %d's %s job at %u seconds\n",
-                   jobs[selected_print_index].user_id,
-                   jobs[selected_print_index].job_type,
-                   elapsed_time);
-            fflush(stdout);  // Force flush
-
             int pages_to_process = (jobs[selected_print_index].page >= TIME_SLICE) ? 
                                    TIME_SLICE : jobs[selected_print_index].page;
             jobs[selected_print_index].page -= pages_to_process;
-
-            printf("Pages remaining for User %d's %s job: %d\n",
-                   jobs[selected_print_index].user_id,
-                   jobs[selected_print_index].job_type,
-                   jobs[selected_print_index].page);
-            fflush(stdout);  // Force flush
-
             if (jobs[selected_print_index].page <= 0)
             {
-                printf("Completed: User %d's %s job\n",
-                       jobs[selected_print_index].user_id,
-                       jobs[selected_print_index].job_type);
-                fflush(stdout);  // Force flush
                 num_jobs--;
             }
         }
-        else
-        {
-            printf("No print job selected.\n");
-            fflush(stdout);  // Force flush
-        }
+        pthread_mutex_unlock(&print_mutex);
+        elapsed_time += TIME_SLICE;
+        usleep(TIME_SLICE * TIME_SCALE);
+    }
+    return NULL;
+}
 
+// Function to handle scan jobs using mutex
+void* scan_job_thread(void* arg)
+{
+    job* jobs = (job*)arg;
+    unsigned int elapsed_time = 0;
+    int num_jobs = get_total_jobs();  // Adjust this to get the total number of jobs
+
+    while (num_jobs > 0)
+    {
+        pthread_mutex_lock(&scan_mutex);
+        // Find and process scan jobs
+        int selected_scan_index = find_next_job(jobs, num_jobs, "scan", elapsed_time);
         if (selected_scan_index != -1)
         {
-            printf("Processing: User %d's %s job at %u seconds\n",
-                   jobs[selected_scan_index].user_id,
-                   jobs[selected_scan_index].job_type,
-                   elapsed_time);
-            fflush(stdout);  // Force flush
-
             int pages_to_process = (jobs[selected_scan_index].page >= TIME_SLICE) ? 
                                    TIME_SLICE : jobs[selected_scan_index].page;
             jobs[selected_scan_index].page -= pages_to_process;
-
-            printf("Pages remaining for User %d's %s job: %d\n",
-                   jobs[selected_scan_index].user_id,
-                   jobs[selected_scan_index].job_type,
-                   jobs[selected_scan_index].page);
-            fflush(stdout);  // Force flush
-
             if (jobs[selected_scan_index].page <= 0)
             {
-                printf("Completed: User %d's %s job\n",
-                       jobs[selected_scan_index].user_id,
-                       jobs[selected_scan_index].job_type);
-                fflush(stdout);  // Force flush
                 num_jobs--;
             }
         }
-        else
-        {
-            printf("No scan job selected.\n");
-            fflush(stdout);  // Force flush
-        }
-
+        pthread_mutex_unlock(&scan_mutex);
         elapsed_time += TIME_SLICE;
-        printf("Incremented elapsed time to %u seconds\n", elapsed_time);
-        fflush(stdout);  // Force flush
-
-        usleep(TIME_SLICE * TIME_SCALE);  // Simulate processing time
+        usleep(TIME_SLICE * TIME_SCALE);
     }
-
-    printf("----------------------------------------------------------\n");
-    printf("Success: All jobs completed!\n");
-    fflush(stdout);  // Force flush
+    return NULL;
 }
