@@ -36,7 +36,7 @@ void schedule_jobs(job* jobs, int num_jobs)
         if (selected_print_index != -1)
         {
             int pages_to_process = (jobs[selected_print_index].page >= TIME_SLICE) ? 
-                                  TIME_SLICE : jobs[selected_print_index].page;
+                                  TIME_SLICE : jobs[selected_print_index].page;//if page == 1, it picks it to avoid idle:)
             jobs[selected_print_index].page -= pages_to_process;
 
             if (jobs[selected_print_index].page <= 0)
