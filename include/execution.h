@@ -1,0 +1,20 @@
+#ifndef EXECUTION_H
+#define EXECUTION_H
+
+#include "job.h"
+#include <semaphore.h>
+#include <pthread.h>
+//this header is for code reusability and readibility :)
+// Struct to hold execution arguments
+typedef struct
+{
+    job* jobs;              // Pointer to job array, the other struct created 
+    int num_jobs;           // total
+    pthread_mutex_t* mutex; // Pointer to a mutex (can be NULL for unsynced)
+    sem_t* semaphore;       // Pointer to a semaphore (can be NULL for unsynced or mutex-based)
+} execution_args;
+
+// Function prototypes for execution logic
+void* generic_execution(void* args); // Generic execution logic for print/scan jobs
+void destroy_synchronization_objects(pthread_mutex_t* mutex, sem_t* semaphore);// destruction of mutex and sempahore
+#endif
