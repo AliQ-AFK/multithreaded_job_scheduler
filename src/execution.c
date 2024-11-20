@@ -1,6 +1,5 @@
 #include "execution.h"
-#include <stdio.h>
-#include <unistd.h>
+#include "utils.h"
 
 void* job_execution(void* arg)
 {
