@@ -1,4 +1,6 @@
 #include "utils.h"
+// schedule_jobs: Manages the scheduling and processing of jobs using a time-slicing approach.
+// It handles job selection, time skipping for idle periods, and updates job status accordingly.
 
 void schedule_jobs(job* jobs, int num_jobs)
 {
