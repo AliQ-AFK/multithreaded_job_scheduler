@@ -22,7 +22,7 @@ void* job_execution(void* arg)
     fflush(log_file);
 
     // Main job processing loop
-    while (*num_jobs > 1)
+    while (*num_jobs > 1) // Changed condition to while num_jobs > 1 to avoid infinite loop
     {
         fprintf(log_file, "\n[INFO] Time slice %u begins. Jobs remaining: %d\n", elapsed_time, *num_jobs);
         fflush(log_file);
@@ -52,6 +52,16 @@ void* job_execution(void* arg)
                 (*num_jobs)--; // Decrease number of jobs left
                 fprintf(log_file, "[INFO] Jobs remaining after completion: %d\n", *num_jobs);
                 fflush(log_file);
+
+                // Force decrement if it's the last job and it's completed
+                if (*num_jobs == 1 && jobs[selected_index].page == 0)
+                {
+                    fprintf(log_file, "[INFO] Last job for User %d (Job ID: %d) completed. Forcing decrement of num_jobs.\n", 
+                            jobs[selected_index].user_id, selected_index);
+                    (*num_jobs)--; // Force decrement to exit the loop
+                    fprintf(log_file, "[INFO] Jobs remaining after forced completion: %d\n", *num_jobs);
+                    fflush(log_file);
+                }
             }
         } 
         else 
