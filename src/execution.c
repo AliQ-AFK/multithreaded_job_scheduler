@@ -6,7 +6,7 @@ void* job_execution(void* arg)
 {
     execution_args* args = (execution_args*)arg;
     job* jobs = args->jobs;
-    int num_jobs = args->num_jobs;
+    int *num_jobs = args->num_jobs;
     pthread_mutex_t* mutex = args->mutex;
     sem_t* semaphore = args->semaphore;
 
