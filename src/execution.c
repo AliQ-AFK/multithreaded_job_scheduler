@@ -1,6 +1,7 @@
 #include "execution.h"
 #include "utils.h"
 
+// Job execution function (generic for all execution types)
 void* job_execution(void* arg)
 {
     execution_args* args = (execution_args*)arg;
@@ -21,64 +22,50 @@ void* job_execution(void* arg)
 
         if (mutex != NULL)
         {
-            printf("[DEBUG] Locking mutex for execution.\n");
-            fflush(stdout);
-            pthread_mutex_lock(mutex); // Lock the mutex if provided
+            pthread_mutex_lock(mutex);
         }
         else if (semaphore != NULL)
         {
-            printf("[DEBUG] Waiting on semaphore for execution.\n");
-            fflush(stdout);
-            sem_wait(semaphore); // Wait on the semaphore if provided
+            sem_wait(semaphore);
         }
 
-        // Find and process jobs
-        int selected_job_index = find_next_job(jobs, num_jobs, "print", elapsed_time);
-        if (selected_job_index != -1)
+        int selected_print_index = find_next_job(jobs, num_jobs, "print", elapsed_time);
+        if (selected_print_index != -1)
         {
-            printf("[DEBUG] Selected job for User %d. Pages before: %d\n",
-                   jobs[selected_job_index].user_id, jobs[selected_job_index].page);
-            fflush(stdout);
+            int pages_to_process = (jobs[selected_print_index].page >= TIME_SLICE) ? 
+                                   TIME_SLICE : jobs[selected_print_index].page;
+            jobs[selected_print_index].page -= pages_to_process;
 
-            int pages_to_process = (jobs[selected_job_index].page >= TIME_SLICE) ? 
-                                   TIME_SLICE : jobs[selected_job_index].page;
-            jobs[selected_job_index].page -= pages_to_process;
-
-            printf("[DEBUG] Processed %d pages for User %d. Pages remaining: %d\n",
-                   pages_to_process, jobs[selected_job_index].user_id, jobs[selected_job_index].page);
-            fflush(stdout);
-
-            if (jobs[selected_job_index].page <= 0)
+            if (jobs[selected_print_index].page <= 0)
             {
-                printf("[DEBUG] Completed job for User %d. Remaining jobs: %d\n", 
-                       jobs[selected_job_index].user_id, num_jobs - 1);
-                fflush(stdout);
                 num_jobs--;
             }
         }
-        else
+
+        int selected_scan_index = find_next_job(jobs, num_jobs, "scan", elapsed_time);
+        if (selected_scan_index != -1)
         {
-            printf("[DEBUG] No jobs ready at elapsed time %u.\n", elapsed_time);
-            fflush(stdout);
+            int pages_to_process = (jobs[selected_scan_index].page >= TIME_SLICE) ? 
+                                   TIME_SLICE : jobs[selected_scan_index].page;
+            jobs[selected_scan_index].page -= pages_to_process;
+
+            if (jobs[selected_scan_index].page <= 0)
+            {
+                num_jobs--;
+            }
         }
+        
 
         if (mutex != NULL)
         {
-            printf("[DEBUG] Unlocking mutex after execution.\n");
-            fflush(stdout);
-            pthread_mutex_unlock(mutex); // Unlock the mutex if provided
+            pthread_mutex_unlock(mutex);
         }
         else if (semaphore != NULL)
         {
-            printf("[DEBUG] Posting semaphore after execution.\n");
-            fflush(stdout);
-            sem_post(semaphore); // Signal the semaphore if provided
+            sem_post(semaphore);
         }
 
         elapsed_time += TIME_SLICE;
-        printf("[DEBUG] Incremented elapsed time to %u.\n", elapsed_time);
-        fflush(stdout);
-
         usleep(TIME_SLICE * TIME_SCALE);
     }
 
@@ -88,19 +75,53 @@ void* job_execution(void* arg)
     return NULL;
 }
 
-void destroy_synchronization_objects(pthread_mutex_t* mutex, sem_t* semaphore)
+// Function to manage execution
+void execute_all_jobs(job* jobs, int *num_jobs)
 {
-    if (mutex != NULL)
+    // Create three separate copies of the job arrays
+    job* jobs_mutex = malloc((*num_jobs) * sizeof(job));  // Dereference num_jobs
+    job* jobs_semaphore = malloc((*num_jobs) * sizeof(job));
+    job* jobs_unsync = malloc((*num_jobs) * sizeof(job));
+
+    memcpy(jobs_mutex, jobs, (*num_jobs) * sizeof(job));  // Dereference num_jobs
+    memcpy(jobs_semaphore, jobs, (*num_jobs) * sizeof(job));
+    memcpy(jobs_unsync, jobs, (*num_jobs) * sizeof(job));
+
+    // Create mutexes and semaphores
+    pthread_mutex_t mutex;
+    pthread_mutex_init(&mutex, NULL);
+
+    sem_t semaphore;
+    sem_init(&semaphore, 0, 1);
+
+    // Thread identifiers
+    pthread_t threads[6];
+
+    // Execution arguments
+    execution_args args_mutex = {jobs_mutex, (*num_jobs) , &mutex, NULL};
+    execution_args args_semaphore = {jobs_semaphore, (*num_jobs), NULL, &semaphore};
+    execution_args args_unsync = {jobs_unsync, (*num_jobs), NULL, NULL};
+
+    // Create threads
+    pthread_create(&threads[0], NULL, job_execution, &args_unsync);
+    pthread_create(&threads[1], NULL, job_execution, &args_unsync);
+    pthread_create(&threads[2], NULL, job_execution, &args_mutex);
+    pthread_create(&threads[3], NULL, job_execution, &args_mutex);
+    pthread_create(&threads[4], NULL, job_execution, &args_semaphore);
+    pthread_create(&threads[5], NULL, job_execution, &args_semaphore);
+
+    // Wait for all threads
+    for (int i = 0; i < 6; i++)
     {
-        printf("[DEBUG] Destroying mutex.\n");
-        fflush(stdout);
-        pthread_mutex_destroy(mutex); // Destroy the mutex if it was initialized
+        pthread_join(threads[i], NULL);
     }
 
-    if (semaphore != NULL)
-    {
-        printf("[DEBUG] Destroying semaphore.\n");
-        fflush(stdout);
-        sem_destroy(semaphore); // Destroy the semaphore if it was initialized
-    }
+    // Clean up synchronization objects
+    pthread_mutex_destroy(&mutex);
+    sem_destroy(&semaphore);
+
+    // Free memory
+    free(jobs_mutex);
+    free(jobs_semaphore);
+    free(jobs_unsync);
 }

@@ -9,7 +9,8 @@ job* initialize_job(int* num_users, int* num_jobs)
         fread(num_jobs, sizeof(int), 1, file);
         
         job* jobs = (job*)malloc(*num_jobs * sizeof(job));
-        if (jobs == NULL) {
+        if (jobs == NULL)
+        {
             fprintf(stderr, "Memory allocation failed\n");
             fclose(file);
             return NULL;
