@@ -6,7 +6,7 @@ void* job_execution(void* arg)
 {
     execution_args* args = (execution_args*)arg;
     job* jobs = args->jobs;
-    int *num_jobs = args->num_jobs;
+    int* num_jobs = args->num_jobs;  // Pointer to specific num_jobs for this execution
     pthread_mutex_t* mutex = args->mutex;
     sem_t* semaphore = args->semaphore;
 
@@ -29,12 +29,12 @@ void* job_execution(void* arg)
 
     unsigned int elapsed_time = 0;
 
-    fprintf(log_file, "[DEBUG] Starting job execution. Total jobs: %d\n", num_jobs);
+    fprintf(log_file, "[DEBUG] Starting job execution. Total jobs: %d\n", *num_jobs);
     fflush(log_file);
 
-    while (num_jobs > 0)
+    while (*num_jobs > 0)
     {
-        fprintf(log_file, "[DEBUG] Time slice %u begins. Jobs remaining: %d\n", elapsed_time, num_jobs);
+        fprintf(log_file, "[DEBUG] Time slice %u begins. Jobs remaining: %d\n", elapsed_time, *num_jobs);
         fflush(log_file);
 
         if (mutex != NULL)
@@ -50,7 +50,7 @@ void* job_execution(void* arg)
             sem_wait(semaphore);
         }
 
-        int selected_print_index = find_next_job(jobs, num_jobs, "print", elapsed_time);
+        int selected_print_index = find_next_job(jobs, *num_jobs, "print", elapsed_time);
         if (selected_print_index != -1)
         {
             int pages_to_process = (jobs[selected_print_index].page >= TIME_SLICE) ? 
@@ -65,11 +65,11 @@ void* job_execution(void* arg)
             {
                 fprintf(log_file, "[DEBUG] Completed print job for User %d\n", jobs[selected_print_index].user_id);
                 fflush(log_file);
-                num_jobs--;
+                (*num_jobs)--;
             }
         }
 
-        int selected_scan_index = find_next_job(jobs, num_jobs, "scan", elapsed_time);
+        int selected_scan_index = find_next_job(jobs, *num_jobs, "scan", elapsed_time);
         if (selected_scan_index != -1)
         {
             int pages_to_process = (jobs[selected_scan_index].page >= TIME_SLICE) ? 
@@ -84,7 +84,7 @@ void* job_execution(void* arg)
             {
                 fprintf(log_file, "[DEBUG] Completed scan job for User %d\n", jobs[selected_scan_index].user_id);
                 fflush(log_file);
-                num_jobs--;
+                (*num_jobs)--;
             }
         }
 
@@ -127,6 +127,11 @@ void execute_all_jobs(job* jobs, int *num_jobs)
     memcpy(jobs_semaphore, jobs, (*num_jobs) * sizeof(job));
     memcpy(jobs_unsync, jobs, (*num_jobs) * sizeof(job));
 
+    // Create separate copies of num_jobs
+    int num_jobs_mutex = *num_jobs;
+    int num_jobs_semaphore = *num_jobs;
+    int num_jobs_unsync = *num_jobs;
+
     // Create mutexes and semaphores
     pthread_mutex_t mutex;
     pthread_mutex_init(&mutex, NULL);
@@ -138,9 +143,9 @@ void execute_all_jobs(job* jobs, int *num_jobs)
     pthread_t threads[6];
 
     // Execution arguments
-    execution_args args_mutex = {jobs_mutex, (*num_jobs), &mutex, NULL};
-    execution_args args_semaphore = {jobs_semaphore, (*num_jobs), NULL, &semaphore};
-    execution_args args_unsync = {jobs_unsync, (*num_jobs), NULL, NULL};
+    execution_args args_mutex = {jobs_mutex, &num_jobs_mutex, &mutex, NULL};
+    execution_args args_semaphore = {jobs_semaphore, &num_jobs_semaphore, NULL, &semaphore};
+    execution_args args_unsync = {jobs_unsync, &num_jobs_unsync, NULL, NULL};
 
     // Create threads
     pthread_create(&threads[0], NULL, job_execution, &args_unsync);
