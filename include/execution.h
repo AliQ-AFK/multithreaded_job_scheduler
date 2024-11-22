@@ -16,7 +16,6 @@ typedef struct
 
 // Function prototypes for execution logic
 void* job_execution(void* arg); // Generic execution logic for print/scan jobs
-void destroy_synchronization_objects(pthread_mutex_t* mutex, sem_t* semaphore);// destruction of mutex and sempahore
 void execute_all_jobs(job* jobs, int *num_jobs);
 
 #endif
