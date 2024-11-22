@@ -21,13 +21,17 @@ void* job_execution(void* arg)
     fprintf(log_file, "[INFO] Starting mutex job execution. Total jobs: %d\n", *num_jobs);
     fflush(log_file);
 
+    pthread_t thread_id = pthread_self(); // Get the current thread ID
+
     // Main job processing loop
     while (*num_jobs > 1) // Changed condition to while num_jobs > 1 to avoid infinite loop
     {
-        fprintf(log_file, "\n[INFO] Time slice %u begins. Jobs remaining: %d\n", elapsed_time, *num_jobs);
+        fprintf(log_file, "[INFO] Thread %ld: Time slice %u begins. Jobs remaining: %d\n", thread_id, elapsed_time, *num_jobs);
         fflush(log_file);
 
         pthread_mutex_lock(mutex);  // Lock the mutex to avoid race conditions
+        fprintf(log_file, "[INFO] Thread %ld: Mutex locked.\n", thread_id);
+        fflush(log_file);
 
         int selected_index = find_next_job(jobs, num_jobs, "print", elapsed_time); // Pass pointer to find job
         if (selected_index != -1)
@@ -37,50 +41,52 @@ void* job_execution(void* arg)
             jobs[selected_index].page -= pages_to_process;
 
             // Log detailed job processing information
-            fprintf(log_file, "[INFO] Job selected for User %d (Job ID: %d). Pages processed: %d. "
+            fprintf(log_file, "[INFO] Thread %ld: Job selected for User %d (Job ID: %d). Pages processed: %d. "
                                "Pages remaining: %d\n", 
-                               jobs[selected_index].user_id, selected_index, 
+                               thread_id, jobs[selected_index].user_id, selected_index, 
                                pages_to_process, jobs[selected_index].page);
             fflush(log_file);
 
             // Check if the job is completed
             if (jobs[selected_index].page <= 0)
             {
-                fprintf(log_file, "[INFO] Job for User %d (Job ID: %d) completed. "
+                fprintf(log_file, "[INFO] Thread %ld: Job for User %d (Job ID: %d) completed. "
                                    "Decrementing num_jobs.\n", 
-                                   jobs[selected_index].user_id, selected_index);
+                                   thread_id, jobs[selected_index].user_id, selected_index);
                 (*num_jobs)--; // Decrease number of jobs left
-                fprintf(log_file, "[INFO] Jobs remaining after completion: %d\n", *num_jobs);
+                fprintf(log_file, "[INFO] Thread %ld: Jobs remaining after completion: %d\n", thread_id, *num_jobs);
                 fflush(log_file);
 
                 // Force decrement if it's the last job and it's completed
                 if (*num_jobs == 1 && jobs[selected_index].page == 0)
                 {
-                    fprintf(log_file, "[INFO] Last job for User %d (Job ID: %d) completed. Forcing decrement of num_jobs.\n", 
-                            jobs[selected_index].user_id, selected_index);
+                    fprintf(log_file, "[INFO] Thread %ld: Last job for User %d (Job ID: %d) completed. Forcing decrement of num_jobs.\n", 
+                            thread_id, jobs[selected_index].user_id, selected_index);
                     (*num_jobs)--; // Force decrement to exit the loop
-                    fprintf(log_file, "[INFO] Jobs remaining after forced completion: %d\n", *num_jobs);
+                    fprintf(log_file, "[INFO] Thread %ld: Jobs remaining after forced completion: %d\n", thread_id, *num_jobs);
                     fflush(log_file);
                 }
             }
         } 
         else 
         {
-            fprintf(log_file, "[INFO] No job found for this time slice (Time: %u).\n", elapsed_time);
+            fprintf(log_file, "[INFO] Thread %ld: No job found for this time slice (Time: %u).\n", thread_id, elapsed_time);
         }
 
         pthread_mutex_unlock(mutex);  // Unlock the mutex after processing the job
+        fprintf(log_file, "[INFO] Thread %ld: Mutex unlocked.\n", thread_id);
+        fflush(log_file);
 
         // Log the time increment
         elapsed_time += TIME_SLICE;
-        fprintf(log_file, "[INFO] Elapsed time incremented to %u.\n", elapsed_time);
+        fprintf(log_file, "[INFO] Thread %ld: Elapsed time incremented to %u.\n", thread_id, elapsed_time);
         fflush(log_file);
 
         usleep(TIME_SLICE * TIME_SCALE);  // Simulate processing delay
     }
 
     // Final log entry when all jobs are processed
-    fprintf(log_file, "[INFO] Mutex job execution completed. Final job count: %d\n", *num_jobs);
+    fprintf(log_file, "[INFO] Thread %ld: Mutex job execution completed. Final job count: %d\n", thread_id, *num_jobs);
     fflush(log_file);
 
     fclose(log_file);  // Close the log file when done
@@ -89,65 +95,35 @@ void* job_execution(void* arg)
 
 void execute_mutex_jobs(job* jobs, int* num_jobs)
 {
-    job* jobs_mutex = malloc((*num_jobs) * sizeof(job));
-    if (!jobs_mutex) {
-        perror("Failed to allocate memory for jobs_mutex");
-        exit(EXIT_FAILURE);
-    }
-    memcpy(jobs_mutex, jobs, (*num_jobs) * sizeof(job));
-
-    int num_jobs_mutex = *num_jobs;
-
+    pthread_t threads[2];
     pthread_mutex_t mutex;
     pthread_mutex_init(&mutex, NULL);  // Initialize mutex
-
-    pthread_t threads[2];
 
     // Log that we're about to start the job execution
     printf("[INFO] Starting mutex-based job execution with 2 threads.\n");
 
     // Prepare execution arguments
-    execution_args args_mutex = {jobs_mutex, &num_jobs_mutex, &mutex, NULL}; // Pass pointer to num_jobs_mutex
+    execution_args args_mutex = {jobs, num_jobs, &mutex, NULL}; // Pass pointer to num_jobs
 
     // Create threads to execute jobs
-    pthread_create(&threads[0], NULL, job_execution, &args_mutex);
-    pthread_create(&threads[1], NULL, job_execution, &args_mutex);
+    for (int i = 0; i < 2; i++) {
+        printf("[INFO] Creating thread %d\n", i);
+        pthread_create(&threads[i], NULL, job_execution, &args_mutex);
+        printf("[INFO] Thread %d created.\n", i);
+    }
 
     // Wait for both threads to finish
     for (int i = 0; i < 2; i++) {
+        printf("[INFO] Waiting for thread %d to finish.\n", i);
         pthread_join(threads[i], NULL);
+        printf("[INFO] Thread %d finished.\n", i);
     }
 
     pthread_mutex_destroy(&mutex);  // Destroy mutex after job execution
-    free(jobs_mutex);  // Free allocated memory for jobs
+    printf("[INFO] Mutex destroyed.\n");
+
     printf("[INFO] Mutex-based job execution completed.\n");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
