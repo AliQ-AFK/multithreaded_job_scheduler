@@ -1,6 +1,208 @@
 #include "utils.h"
 #include "execution.h"
 
+void* job_execution(void* arg) {
+    execution_args* args = (execution_args*)arg;
+    job* jobs = args->jobs;
+    int* num_jobs = args->num_jobs;  // Pointer to specific num_jobs for this execution
+
+    FILE* log_file = fopen("unsynced_execution.log", "a");
+    if (!log_file) {
+        perror("Failed to open log file");
+        return NULL;
+    }
+
+    unsigned int elapsed_time = 0;
+
+    fprintf(log_file, "[DEBUG] Starting unsynced job execution. Total jobs: %d\n", *num_jobs);
+    fflush(log_file);
+
+    while (*num_jobs > 0) {
+        fprintf(log_file, "[DEBUG] Time slice %u begins. Jobs remaining: %d\n", elapsed_time, *num_jobs);
+        fflush(log_file);
+
+        int selected_index = find_next_job(jobs, num_jobs, "print", elapsed_time); // Pass pointer
+        if (selected_index != -1) {
+            int pages_to_process = (jobs[selected_index].page >= TIME_SLICE) ? 
+                                   TIME_SLICE : jobs[selected_index].page;
+            jobs[selected_index].page -= pages_to_process;
+
+            fprintf(log_file, "[DEBUG] Processed job for User %d. Pages remaining: %d\n",
+                    jobs[selected_index].user_id, jobs[selected_index].page);
+            fflush(log_file);
+
+            if (jobs[selected_index].page <= 0) {
+                fprintf(log_file, "[DEBUG] Completed job for User %d. Decrementing num_jobs.\n",
+                        jobs[selected_index].user_id);
+                (*num_jobs)--;
+            }
+        } else {
+            fprintf(log_file, "[DEBUG] No job found for this time slice.\n");
+        }
+
+        elapsed_time += TIME_SLICE;
+        fprintf(log_file, "[DEBUG] Incremented elapsed time to %u.\n", elapsed_time);
+        fflush(log_file);
+
+        usleep(TIME_SLICE * TIME_SCALE);
+    }
+
+    fprintf(log_file, "[DEBUG] Unsynced job execution completed. Final job count: %d\n", *num_jobs);
+    fflush(log_file);
+
+    fclose(log_file);
+    return NULL;
+}
+
+void execute_unsynced_jobs(job* jobs, int* num_jobs) {
+    job* jobs_unsync = malloc((*num_jobs) * sizeof(job));
+    if (!jobs_unsync) {
+        perror("Failed to allocate memory for jobs_unsync");
+        exit(EXIT_FAILURE);
+    }
+    memcpy(jobs_unsync, jobs, (*num_jobs) * sizeof(job));
+
+    int num_jobs_unsync = *num_jobs;
+
+    pthread_t threads[2];
+
+    execution_args args_unsync = {jobs_unsync, &num_jobs_unsync, NULL, NULL}; // Pass pointer to num_jobs_unsync
+
+    pthread_create(&threads[0], NULL, job_execution, &args_unsync);
+    pthread_create(&threads[1], NULL, job_execution, &args_unsync);
+
+    for (int i = 0; i < 2; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    free(jobs_unsync);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*#include "utils.h"
+#include "execution.h"
+
 // Job execution function (generic for all execution types)
 void* job_execution(void* arg)
 {
@@ -169,4 +371,4 @@ void execute_all_jobs(job* jobs, int *num_jobs)
     free(jobs_mutex);
     free(jobs_semaphore);
     free(jobs_unsync);
-}
+}*/

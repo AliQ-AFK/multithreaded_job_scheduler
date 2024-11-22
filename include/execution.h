@@ -16,6 +16,7 @@ typedef struct
 
 // Function prototypes for execution logic
 void* job_execution(void* arg); // Generic execution logic for print/scan jobs
-void execute_all_jobs(job* jobs, int *num_jobs);
+//void execute_all_jobs(job* jobs, int *num_jobs);
+void execute_unsynced_jobs(job* jobs, int* num_jobs); // Manages unsynced execution
 
 #endif
