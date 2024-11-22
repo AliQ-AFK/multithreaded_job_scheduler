@@ -27,7 +27,7 @@ job* initialize_job(int* num_users, int* num_jobs)
             jobs[job_index].page = rand() % 50 + 1;
             jobs[job_index].arrival_time = rand() % MAX_TIME + 1;
         }
-    ) 
+    } 
 
     // Debugging: Print job details to confirm they are created correctly
     printf("Number of users: %d\n", *num_users);
@@ -38,9 +38,10 @@ job* initialize_job(int* num_users, int* num_jobs)
                i, jobs[i].user_id, jobs[i].job_type, jobs[i].page, jobs[i].arrival_time);
     }
 
-    // Update total number of jobs
+    // Update total number of jobs,
+    //no need to crteate extra var and all functions use num_job
     *num_jobs = total_jobs;
 
     return jobs;
-    
+
 }

@@ -1,5 +1,5 @@
-#include "execution.h"
 #include "utils.h"
+#include "execution.h"
 
 // Job execution function (generic for all execution types)
 void* job_execution(void* arg)
@@ -10,22 +10,43 @@ void* job_execution(void* arg)
     pthread_mutex_t* mutex = args->mutex;
     sem_t* semaphore = args->semaphore;
 
+    // Determine the log file name based on the execution type
+    char log_filename[50];
+    if (mutex != NULL)
+        snprintf(log_filename, sizeof(log_filename), "mutex_execution.log");
+    else if (semaphore != NULL)
+        snprintf(log_filename, sizeof(log_filename), "semaphore_execution.log");
+    else
+        snprintf(log_filename, sizeof(log_filename), "unsynced_execution.log");
+
+    // Open the log file in append mode
+    FILE* log_file = fopen(log_filename, "a");
+    if (!log_file)
+    {
+        perror("Failed to open log file");
+        return NULL;
+    }
+
     unsigned int elapsed_time = 0;
 
-    printf("[DEBUG] Starting job execution. Total jobs: %d\n", num_jobs);
-    fflush(stdout);
+    fprintf(log_file, "[DEBUG] Starting job execution. Total jobs: %d\n", num_jobs);
+    fflush(log_file);
 
     while (num_jobs > 0)
     {
-        printf("[DEBUG] Time slice %u begins. Jobs remaining: %d\n", elapsed_time, num_jobs);
-        fflush(stdout);
+        fprintf(log_file, "[DEBUG] Time slice %u begins. Jobs remaining: %d\n", elapsed_time, num_jobs);
+        fflush(log_file);
 
         if (mutex != NULL)
         {
+            fprintf(log_file, "[DEBUG] Locking mutex for execution.\n");
+            fflush(log_file);
             pthread_mutex_lock(mutex);
         }
         else if (semaphore != NULL)
         {
+            fprintf(log_file, "[DEBUG] Waiting on semaphore for execution.\n");
+            fflush(log_file);
             sem_wait(semaphore);
         }
 
@@ -36,8 +57,14 @@ void* job_execution(void* arg)
                                    TIME_SLICE : jobs[selected_print_index].page;
             jobs[selected_print_index].page -= pages_to_process;
 
+            fprintf(log_file, "[DEBUG] Processed print job for User %d. Pages remaining: %d\n",
+                    jobs[selected_print_index].user_id, jobs[selected_print_index].page);
+            fflush(log_file);
+
             if (jobs[selected_print_index].page <= 0)
             {
+                fprintf(log_file, "[DEBUG] Completed print job for User %d\n", jobs[selected_print_index].user_id);
+                fflush(log_file);
                 num_jobs--;
             }
         }
@@ -49,29 +76,42 @@ void* job_execution(void* arg)
                                    TIME_SLICE : jobs[selected_scan_index].page;
             jobs[selected_scan_index].page -= pages_to_process;
 
+            fprintf(log_file, "[DEBUG] Processed scan job for User %d. Pages remaining: %d\n",
+                    jobs[selected_scan_index].user_id, jobs[selected_scan_index].page);
+            fflush(log_file);
+
             if (jobs[selected_scan_index].page <= 0)
             {
+                fprintf(log_file, "[DEBUG] Completed scan job for User %d\n", jobs[selected_scan_index].user_id);
+                fflush(log_file);
                 num_jobs--;
             }
         }
-        
 
         if (mutex != NULL)
         {
+            fprintf(log_file, "[DEBUG] Unlocking mutex after execution.\n");
+            fflush(log_file);
             pthread_mutex_unlock(mutex);
         }
         else if (semaphore != NULL)
         {
+            fprintf(log_file, "[DEBUG] Posting semaphore after execution.\n");
+            fflush(log_file);
             sem_post(semaphore);
         }
 
         elapsed_time += TIME_SLICE;
+        fprintf(log_file, "[DEBUG] Incremented elapsed time to %u.\n", elapsed_time);
+        fflush(log_file);
+
         usleep(TIME_SLICE * TIME_SCALE);
     }
 
-    printf("[DEBUG] Job execution completed.\n");
-    fflush(stdout);
+    fprintf(log_file, "[DEBUG] Job execution completed.\n");
+    fflush(log_file);
 
+    fclose(log_file); // Close the log file
     return NULL;
 }
 
@@ -79,11 +119,11 @@ void* job_execution(void* arg)
 void execute_all_jobs(job* jobs, int *num_jobs)
 {
     // Create three separate copies of the job arrays
-    job* jobs_mutex = malloc((*num_jobs) * sizeof(job));  // Dereference num_jobs
+    job* jobs_mutex = malloc((*num_jobs) * sizeof(job));
     job* jobs_semaphore = malloc((*num_jobs) * sizeof(job));
     job* jobs_unsync = malloc((*num_jobs) * sizeof(job));
 
-    memcpy(jobs_mutex, jobs, (*num_jobs) * sizeof(job));  // Dereference num_jobs
+    memcpy(jobs_mutex, jobs, (*num_jobs) * sizeof(job));
     memcpy(jobs_semaphore, jobs, (*num_jobs) * sizeof(job));
     memcpy(jobs_unsync, jobs, (*num_jobs) * sizeof(job));
 
@@ -98,7 +138,7 @@ void execute_all_jobs(job* jobs, int *num_jobs)
     pthread_t threads[6];
 
     // Execution arguments
-    execution_args args_mutex = {jobs_mutex, (*num_jobs) , &mutex, NULL};
+    execution_args args_mutex = {jobs_mutex, (*num_jobs), &mutex, NULL};
     execution_args args_semaphore = {jobs_semaphore, (*num_jobs), NULL, &semaphore};
     execution_args args_unsync = {jobs_unsync, (*num_jobs), NULL, NULL};
 

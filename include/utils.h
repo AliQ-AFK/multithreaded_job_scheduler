@@ -21,6 +21,6 @@
 
 
 int find_next_job(job* jobs, int num_jobs, const char* type, int elapsed_time);
-void schedule_jobs(job* jobs, int num_jobs); 
+//void schedule_jobs(job* jobs, int num_jobs); 
 
 #endif 
