@@ -1,96 +1,117 @@
 #include "utils.h"
 #include "execution.h"
 
-void* job_execution(void* arg) {
+void* job_execution(void* arg)
+{
     execution_args* args = (execution_args*)arg;
     job* jobs = args->jobs;
     int* num_jobs = args->num_jobs;  // Pointer to specific num_jobs for this execution
+    pthread_mutex_t* mutex = args->mutex;
 
-    FILE* log_file = fopen("unsynced_execution.log", "a");
-    if (!log_file) {
+    FILE* log_file = fopen("mutex_execution.log", "a");
+    if (!log_file)
+    {
         perror("Failed to open log file");
         return NULL;
     }
 
     unsigned int elapsed_time = 0;
 
-    fprintf(log_file, "[DEBUG] Starting unsynced job execution. Total jobs: %d\n", *num_jobs);
+    // Starting the job execution log entry
+    fprintf(log_file, "[INFO] Starting mutex job execution. Total jobs: %d\n", *num_jobs);
     fflush(log_file);
 
-    while (*num_jobs > 0) {
-        fprintf(log_file, "[DEBUG] Time slice %u begins. Jobs remaining: %d\n", elapsed_time, *num_jobs);
+    // Main job processing loop
+    while (*num_jobs > 1)
+    {
+        fprintf(log_file, "\n[INFO] Time slice %u begins. Jobs remaining: %d\n", elapsed_time, *num_jobs);
         fflush(log_file);
 
-        int selected_index = find_next_job(jobs, num_jobs, "print", elapsed_time); // Pass pointer
-        if (selected_index != -1) {
+        pthread_mutex_lock(mutex);  // Lock the mutex to avoid race conditions
+
+        int selected_index = find_next_job(jobs, num_jobs, "print", elapsed_time); // Pass pointer to find job
+        if (selected_index != -1)
+        {
             int pages_to_process = (jobs[selected_index].page >= TIME_SLICE) ? 
                                    TIME_SLICE : jobs[selected_index].page;
             jobs[selected_index].page -= pages_to_process;
 
-            fprintf(log_file, "[DEBUG] Processed job for User %d. Pages remaining: %d\n",
-                    jobs[selected_index].user_id, jobs[selected_index].page);
+            // Log detailed job processing information
+            fprintf(log_file, "[INFO] Job selected for User %d (Job ID: %d). Pages processed: %d. "
+                               "Pages remaining: %d\n", 
+                               jobs[selected_index].user_id, selected_index, 
+                               pages_to_process, jobs[selected_index].page);
             fflush(log_file);
 
-            if (jobs[selected_index].page <= 0) {
-                fprintf(log_file, "[DEBUG] Completed job for User %d. Decrementing num_jobs.\n",
-                        jobs[selected_index].user_id);
-                (*num_jobs)--;
+            // Check if the job is completed
+            if (jobs[selected_index].page <= 0)
+            {
+                fprintf(log_file, "[INFO] Job for User %d (Job ID: %d) completed. "
+                                   "Decrementing num_jobs.\n", 
+                                   jobs[selected_index].user_id, selected_index);
+                (*num_jobs)--; // Decrease number of jobs left
+                fprintf(log_file, "[INFO] Jobs remaining after completion: %d\n", *num_jobs);
+                fflush(log_file);
             }
-        } else {
-            fprintf(log_file, "[DEBUG] No job found for this time slice.\n");
+        } 
+        else 
+        {
+            fprintf(log_file, "[INFO] No job found for this time slice (Time: %u).\n", elapsed_time);
         }
 
+        pthread_mutex_unlock(mutex);  // Unlock the mutex after processing the job
+
+        // Log the time increment
         elapsed_time += TIME_SLICE;
-        fprintf(log_file, "[DEBUG] Incremented elapsed time to %u.\n", elapsed_time);
+        fprintf(log_file, "[INFO] Elapsed time incremented to %u.\n", elapsed_time);
         fflush(log_file);
 
-        usleep(TIME_SLICE * TIME_SCALE);
+        usleep(TIME_SLICE * TIME_SCALE);  // Simulate processing delay
     }
 
-    fprintf(log_file, "[DEBUG] Unsynced job execution completed. Final job count: %d\n", *num_jobs);
+    // Final log entry when all jobs are processed
+    fprintf(log_file, "[INFO] Mutex job execution completed. Final job count: %d\n", *num_jobs);
     fflush(log_file);
 
-    fclose(log_file);
+    fclose(log_file);  // Close the log file when done
     return NULL;
 }
 
-void execute_unsynced_jobs(job* jobs, int* num_jobs) {
-    job* jobs_unsync = malloc((*num_jobs) * sizeof(job));
-    if (!jobs_unsync) {
-        perror("Failed to allocate memory for jobs_unsync");
+void execute_mutex_jobs(job* jobs, int* num_jobs)
+{
+    job* jobs_mutex = malloc((*num_jobs) * sizeof(job));
+    if (!jobs_mutex) {
+        perror("Failed to allocate memory for jobs_mutex");
         exit(EXIT_FAILURE);
     }
-    memcpy(jobs_unsync, jobs, (*num_jobs) * sizeof(job));
+    memcpy(jobs_mutex, jobs, (*num_jobs) * sizeof(job));
 
-    int num_jobs_unsync = *num_jobs;
+    int num_jobs_mutex = *num_jobs;
+
+    pthread_mutex_t mutex;
+    pthread_mutex_init(&mutex, NULL);  // Initialize mutex
 
     pthread_t threads[2];
 
-    execution_args args_unsync = {jobs_unsync, &num_jobs_unsync, NULL, NULL}; // Pass pointer to num_jobs_unsync
+    // Log that we're about to start the job execution
+    printf("[INFO] Starting mutex-based job execution with 2 threads.\n");
 
-    pthread_create(&threads[0], NULL, job_execution, &args_unsync);
-    pthread_create(&threads[1], NULL, job_execution, &args_unsync);
+    // Prepare execution arguments
+    execution_args args_mutex = {jobs_mutex, &num_jobs_mutex, &mutex, NULL}; // Pass pointer to num_jobs_mutex
 
+    // Create threads to execute jobs
+    pthread_create(&threads[0], NULL, job_execution, &args_mutex);
+    pthread_create(&threads[1], NULL, job_execution, &args_mutex);
+
+    // Wait for both threads to finish
     for (int i = 0; i < 2; i++) {
         pthread_join(threads[i], NULL);
     }
 
-    free(jobs_unsync);
+    pthread_mutex_destroy(&mutex);  // Destroy mutex after job execution
+    free(jobs_mutex);  // Free allocated memory for jobs
+    printf("[INFO] Mutex-based job execution completed.\n");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
