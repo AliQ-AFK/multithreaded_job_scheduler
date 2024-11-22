@@ -2,35 +2,6 @@
 
 job* initialize_job(int* num_users, int* num_jobs)
 {
-    FILE* file = fopen("jobs.dat", "rb");
-    if (file) {
-        // Read existing jobs from file
-        fread(num_users, sizeof(int), 1, file);
-        fread(num_jobs, sizeof(int), 1, file);
-        
-        job* jobs = (job*)malloc(*num_jobs * sizeof(job));
-        if (jobs == NULL)
-        {
-            fprintf(stderr, "Memory allocation failed\n");
-            fclose(file);
-            return NULL;
-        }
-        
-        fread(jobs, sizeof(job), *num_jobs, file);
-        fclose(file);
-
-        // Debugging: Print job details to confirm they are read correctly
-        printf("Number of users: %d\n", *num_users);
-        printf("Number of jobs: %d\n", *num_jobs);
-        for (int i = 0; i < *num_jobs; i++)
-        {
-            printf("Job %d: User ID = %d, Type = %s, Pages = %d, Arrival Time = %u\n",
-                   i, jobs[i].user_id, jobs[i].job_type, jobs[i].page, jobs[i].arrival_time);
-        }
-        return jobs;
-    }
-
-    // If no file exists, create new jobs
     printf("Enter the number of users:\n");
     if (scanf("%d", num_users) != 1) return NULL;
     printf("Enter the number of jobs per user:\n");
@@ -69,16 +40,6 @@ job* initialize_job(int* num_users, int* num_jobs)
 
     // Update total number of jobs
     *num_jobs = total_jobs;
-
-    // Save jobs to file
-    file = fopen("jobs.dat", "wb");
-    if (file)
-    {
-        fwrite(num_users, sizeof(int), 1, file);
-        fwrite(num_jobs, sizeof(int), 1, file);
-        fwrite(jobs, sizeof(job), *num_jobs, file);
-        fclose(file);
-    }
 
     return jobs;
 }
