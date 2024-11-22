@@ -8,8 +8,8 @@
 // Struct to hold execution arguments
 typedef struct
 {
-    job* jobs;              // Pointer to job array, the other struct created 
-    int num_jobs;           // total
+    job *jobs;              // Pointer to job array, the other struct created 
+    int *num_jobs;           // total
     pthread_mutex_t* mutex; // Pointer to a mutex (can be NULL for unsynced)
     sem_t* semaphore;       // Pointer to a semaphore (can be NULL for unsynced or mutex-based)
 } execution_args;
