@@ -1,0 +1,285 @@
+[INFO] Starting mutex job execution. Total jobs: 4
+[INFO] Thread 131526314428096: Time slice 0 begins. Jobs remaining: 4
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 0).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 2.
+[INFO] Thread 131526314428096: Time slice 2 begins. Jobs remaining: 4
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 2).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 4.
+[INFO] Thread 131526314428096: Time slice 4 begins. Jobs remaining: 4
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 4).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 6.
+[INFO] Thread 131526314428096: Time slice 6 begins. Jobs remaining: 4
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 6).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 8.
+[INFO] Thread 131526314428096: Time slice 8 begins. Jobs remaining: 4
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: Job selected for User 1 (Job ID: 0). Pages processed: 2. Pages remaining: 2
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 10.
+[INFO] Thread 131526314428096: Time slice 10 begins. Jobs remaining: 4
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: Job selected for User 1 (Job ID: 0). Pages processed: 2. Pages remaining: 0
+[INFO] Thread 131526314428096: Job for User 1 (Job ID: 0) completed. Decrementing num_jobs.
+[INFO] Thread 131526314428096: Jobs remaining after completion: 3
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 12.
+[INFO] Thread 131526314428096: Time slice 12 begins. Jobs remaining: 3
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 12).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 14.
+[INFO] Thread 131526314428096: Time slice 14 begins. Jobs remaining: 3
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 14).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 16.
+[INFO] Thread 131526314428096: Time slice 16 begins. Jobs remaining: 3
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: Job selected for User 1 (Job ID: 1). Pages processed: 2. Pages remaining: 6
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 18.
+[INFO] Thread 131526314428096: Time slice 18 begins. Jobs remaining: 3
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: Job selected for User 1 (Job ID: 1). Pages processed: 2. Pages remaining: 4
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 20.
+[INFO] Thread 131526314428096: Time slice 20 begins. Jobs remaining: 3
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: Job selected for User 1 (Job ID: 1). Pages processed: 2. Pages remaining: 2
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 22.
+[INFO] Thread 131526314428096: Time slice 22 begins. Jobs remaining: 3
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: Job selected for User 1 (Job ID: 1). Pages processed: 2. Pages remaining: 0
+[INFO] Thread 131526314428096: Job for User 1 (Job ID: 1) completed. Decrementing num_jobs.
+[INFO] Thread 131526314428096: Jobs remaining after completion: 2
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 24.
+[INFO] Thread 131526314428096: Time slice 24 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 24).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 26.
+[INFO] Thread 131526314428096: Time slice 26 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 26).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 28.
+[INFO] Thread 131526314428096: Time slice 28 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 28).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 30.
+[INFO] Thread 131526314428096: Time slice 30 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 30).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 32.
+[INFO] Thread 131526314428096: Time slice 32 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 32).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 34.
+[INFO] Thread 131526314428096: Time slice 34 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 34).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 36.
+[INFO] Thread 131526314428096: Time slice 36 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 36).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 38.
+[INFO] Thread 131526314428096: Time slice 38 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 38).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 40.
+[INFO] Thread 131526314428096: Time slice 40 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 40).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 42.
+[INFO] Thread 131526314428096: Time slice 42 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 42).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 44.
+[INFO] Thread 131526314428096: Time slice 44 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 44).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 46.
+[INFO] Thread 131526314428096: Time slice 46 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 46).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 48.
+[INFO] Thread 131526314428096: Time slice 48 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 48).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 50.
+[INFO] Thread 131526314428096: Time slice 50 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 50).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 52.
+[INFO] Thread 131526314428096: Time slice 52 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 52).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 54.
+[INFO] Thread 131526314428096: Time slice 54 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 54).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 56.
+[INFO] Thread 131526314428096: Time slice 56 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 56).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 58.
+[INFO] Thread 131526314428096: Time slice 58 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 58).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 60.
+[INFO] Thread 131526314428096: Time slice 60 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 60).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 62.
+[INFO] Thread 131526314428096: Time slice 62 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 62).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 64.
+[INFO] Thread 131526314428096: Time slice 64 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 64).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 66.
+[INFO] Thread 131526314428096: Time slice 66 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 66).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 68.
+[INFO] Thread 131526314428096: Time slice 68 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 68).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 70.
+[INFO] Thread 131526314428096: Time slice 70 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 70).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 72.
+[INFO] Thread 131526314428096: Time slice 72 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 72).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 74.
+[INFO] Thread 131526314428096: Time slice 74 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 74).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 76.
+[INFO] Thread 131526314428096: Time slice 76 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 76).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 78.
+[INFO] Thread 131526314428096: Time slice 78 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 78).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 80.
+[INFO] Thread 131526314428096: Time slice 80 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 80).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 82.
+[INFO] Thread 131526314428096: Time slice 82 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 82).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 84.
+[INFO] Thread 131526314428096: Time slice 84 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 84).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 86.
+[INFO] Thread 131526314428096: Time slice 86 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 86).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 88.
+[INFO] Thread 131526314428096: Time slice 88 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 88).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 90.
+[INFO] Thread 131526314428096: Time slice 90 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 90).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 92.
+[INFO] Thread 131526314428096: Time slice 92 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 92).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 94.
+[INFO] Thread 131526314428096: Time slice 94 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 94).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 96.
+[INFO] Thread 131526314428096: Time slice 96 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 96).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 98.
+[INFO] Thread 131526314428096: Time slice 98 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 98).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 100.
+[INFO] Thread 131526314428096: Time slice 100 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 100).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 102.
+[INFO] Thread 131526314428096: Time slice 102 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 102).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 104.
+[INFO] Thread 131526314428096: Time slice 104 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 104).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 106.
+[INFO] Thread 131526314428096: Time slice 106 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 106).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 108.
+[INFO] Thread 131526314428096: Time slice 108 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 108).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 110.
+[INFO] Thread 131526314428096: Time slice 110 begins. Jobs remaining: 2
+[INFO] Thread 131526314428096: Mutex locked.
+[INFO] Thread 131526314428096: No job found for this time slice (Time: 110).
+[INFO] Thread 131526314428096: Mutex unlocked.
+[INFO] Thread 131526314428096: Elapsed time incremented to 112.

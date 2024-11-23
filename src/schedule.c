@@ -59,12 +59,14 @@
 
     printf("Scheduling ends...\n");
     fflush(stdout);
-}*/
-int find_next_job(job* jobs, int* num_jobs, const char* type, int elapsed_time) {
+}
+int find_next_job(job* jobs, int* num_jobs, const char* type, int elapsed_time)
+{
     printf("[DEBUG] find_next_job called with num_jobs = %d\n", *num_jobs);
     fflush(stdout);
 
-    for (int i = 0; i < *num_jobs; i++) {
+    for (int i = 0; i < *num_jobs; i++)
+    {
         printf("[DEBUG] Checking job %d: Type = %s, Pages = %d, Arrival Time = %u\n",
                i, jobs[i].job_type, jobs[i].page, jobs[i].arrival_time);
         fflush(stdout);
@@ -72,7 +74,37 @@ int find_next_job(job* jobs, int* num_jobs, const char* type, int elapsed_time) 
         // Check if the job matches criteria
         if (jobs[i].page > 0 &&                              // Job has remaining pages
             strcmp(jobs[i].job_type, type) == 0 &&           // Matches requested type
-            jobs[i].arrival_time <= (unsigned int)elapsed_time) { // Job is ready
+            jobs[i].arrival_time <= (unsigned int)elapsed_time) 
+        { // Job is ready
+            printf("[DEBUG] Selected job %d\n", i);
+            fflush(stdout);
+            return i; // Return the index of the job
+        }
+    }
+
+    printf("[DEBUG] No job found for type %s at elapsed time %u\n", type, elapsed_time);
+    fflush(stdout);
+    return -1; // No job is ready
+}*/
+
+
+int find_next_job(job* jobs, int* num_jobs, const char* type, int elapsed_time)
+{
+    printf("[DEBUG] find_next_job called with num_jobs = %d\n", *num_jobs);
+    fflush(stdout);
+
+    // Force checking for "print" jobs only
+    for (int i = 0; i < *num_jobs; i++)
+    {
+        printf("[DEBUG] Checking job %d: Type = %s, Pages = %d, Arrival Time = %u\n",
+               i, jobs[i].job_type, jobs[i].page, jobs[i].arrival_time);
+        fflush(stdout);
+
+        // Check if the job is of type "print", has pages left, and its arrival time is valid
+        if (jobs[i].page > 0 &&                              // Job has remaining pages
+            strcmp(jobs[i].job_type, "print") == 0 &&        // Force the "print" job type
+            jobs[i].arrival_time <= (unsigned int)elapsed_time) 
+        { // Job is ready
             printf("[DEBUG] Selected job %d\n", i);
             fflush(stdout);
             return i; // Return the index of the job
@@ -83,5 +115,3 @@ int find_next_job(job* jobs, int* num_jobs, const char* type, int elapsed_time) 
     fflush(stdout);
     return -1; // No job is ready
 }
-
-
