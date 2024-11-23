@@ -1,5 +1,5 @@
 #include "utils.h"
-#include "execution.h"
+//#include "execution.h"
 
 int main() {
     int num_users;
@@ -13,8 +13,8 @@ int main() {
     }
 
     // Execute jobs using mutex synchronization
-    execute_mutex_jobs(jobs, &num_jobs);
-
+    //execute_mutex_jobs(jobs, &num_jobs);
+    schedule_jobs(jobs, &num_jobs);
     // Free allocated resources
     free(jobs);
     return 0;

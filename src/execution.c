@@ -1,4 +1,4 @@
-#include "utils.h"
+/*#include "utils.h"
 #include "execution.h"
 
 void* job_execution(void* arg)
@@ -119,7 +119,7 @@ void execute_mutex_jobs(job* jobs, int* num_jobs)
     printf("[INFO] Mutex destroyed.\n");
 
     printf("[INFO] Mutex-based job execution completed.\n");
-}
+}*/
 
 
 
@@ -292,7 +292,6 @@ void execute_mutex_jobs(job* jobs, int* num_jobs)
 
     printf("[INFO] Mutex-based job execution completed.\n");
 }*/
-
 
 
 

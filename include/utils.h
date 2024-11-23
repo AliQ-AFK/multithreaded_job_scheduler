@@ -20,7 +20,8 @@
 
 int find_next_job(job* jobs, int* num_jobs, const char* type, int elapsed_time);
 
+void remove_job(job* jobs, int* num_jobs, int job_index);
 
-//void schedule_jobs(job* jobs, int num_jobs); 
+void schedule_jobs(job* jobs, int *num_jobs); 
 
 #endif 
