@@ -89,7 +89,7 @@ int find_next_job(job* jobs, int* num_jobs, const char* type, int elapsed_time)
         // Check if the job matches criteria
         if (jobs[i].page > 0 &&                              // Job has remaining pages
             strcmp(jobs[i].job_type, type) == 0 &&           // Matches requested type
-            jobs[i].arrival_time <= (unsigned int)elapsed_time) 
+            jobs[i].arrival_time <= elapsed_time) 
         { // Job is ready
             printf("[DEBUG] Selected job %d\n", i);
             fflush(stdout);

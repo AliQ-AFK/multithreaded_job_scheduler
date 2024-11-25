@@ -8,7 +8,7 @@ typedef struct
     int    user_id;
     char   job_type[6];//print, scan + null terminator
     int    page;//number of pages
-    unsigned int    arrival_time;
+    int    arrival_time;
     int    start_time;
     int    completion_time;
 } job;

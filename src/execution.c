@@ -41,6 +41,7 @@ void process_job(job* jobs, int* num_jobs, const char* job_type, unsigned int* e
                     timestamp, thread_id, job_type, jobs[selected_job_index].user_id);
             fflush(log_file);
             (*num_jobs)--;  // Decrement job count
+           
         }
         else
         {
@@ -58,12 +59,14 @@ void process_job(job* jobs, int* num_jobs, const char* job_type, unsigned int* e
     }
     else
     {
+
         // If no job is found for the given job type at this time, log it
         char timestamp[20];
         get_current_time(timestamp, sizeof(timestamp));  // Get the current time
         fprintf(log_file, "[%s] [THREAD %ld] [DEBUG] No %-10s Job Found at Time %-5u.\n", 
                 timestamp, thread_id, job_type, *elapsed_time);
         fflush(log_file);
+        elapsed_time += 1; //idle 
     }
 }
 
