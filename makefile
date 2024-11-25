@@ -1,6 +1,8 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=address -g
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g  # Removed -pthread from here
+LDFLAGS = -pthread  # Add -pthread for linking
+
 INCLUDE = -Iinclude
 
 # Directories
@@ -21,7 +23,7 @@ all: $(OBJ_DIR) $(TARGET)
 # Build the executable
 $(TARGET): $(OBJ)
 	@echo "Linking $(TARGET)..."
-	$(CC) $(CFLAGS) $(INCLUDE) -o $@ $^
+	$(CC) $(CFLAGS) $(INCLUDE) $(OBJ) $(LDFLAGS) -o $@
 
 # Build object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)

@@ -6,14 +6,14 @@
 #include <pthread.h>
 //this header is for code reusability and readibility :)
 // Struct to hold execution arguments
-typedef struct
-{
-    job *jobs;              // Pointer to job array, the other struct created 
-    int *num_jobs;           // total
-    pthread_mutex_t* mutex; // Pointer to a mutex (can be NULL for unsynced)
-    sem_t* semaphore;       // Pointer to a semaphore (can be NULL for unsynced or mutex-based)
+typedef struct {
+    job* jobs;               // Pointer to the array of jobs
+    int* num_jobs;           // Pointer to the number of jobs
+    pthread_mutex_t* print_mutex;    // Mutex for print jobs (if using mutexes)
+    pthread_mutex_t* scan_mutex;     // Mutex for scan jobs (if using mutexes)
+    sem_t* print_semaphore;          // Semaphore for print jobs (if using semaphores)
+    sem_t* scan_semaphore;           // Semaphore for scan jobs (if using semaphores)
 } execution_args;
-
 
 
 // Function prototypes for execution logic
