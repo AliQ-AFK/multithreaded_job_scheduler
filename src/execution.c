@@ -1,15 +1,39 @@
 #include "utils.h"
 #include "execution.h"
 
+void execute_job(job* jobs, int* num_jobs, const char* job_type, unsigned int elapsed_time, FILE* log_file)
+{
+    int selected_job_index = find_next_job(jobs, *num_jobs, job_type, elapsed_time);
+    if (selected_job_index != -1)
+    {
+        jobs[selected_job_index].page -= TIME_SLICE;
+        
+        fprintf(log_file, "[DEBUG] Processed %s job for User %d. Pages remaining: %d\n",
+                job_type, jobs[selected_job_index].user_id, jobs[selected_job_index].page);
+        fflush(log_file);
+
+        if (jobs[selected_job_index].page <= 0)
+        {
+            fprintf(log_file, "[DEBUG] Completed %s job for User %d\n", job_type, jobs[selected_job_index].user_id);
+            fflush(log_file);
+            (*num_jobs)--;  // Decrement job count
+        }
+    }
+}
+
+
+
 // Job execution function (for mutex)
-void* mutex_job_execution(void* arg) {
+void* mutex_job_execution(void* arg)
+{
     execution_args* args = (execution_args*)arg;
     job* jobs = args->jobs;
     int* num_jobs = args->num_jobs;
     pthread_mutex_t* mutex = args->mutex;
 
     FILE* log_file = fopen("mutex_execution.log", "a");
-    if (!log_file) {
+    if (!log_file)
+    {
         perror("Failed to open log file");
         return NULL;
     }
@@ -21,9 +45,11 @@ void* mutex_job_execution(void* arg) {
 
         // Process jobs...
         int selected_job_index = find_next_job(jobs, *num_jobs, "print", elapsed_time);
-        if (selected_job_index != -1) {
+        if (selected_job_index != -1)
+        {
             jobs[selected_job_index].page -= TIME_SLICE;
-            if (jobs[selected_job_index].page <= 0) {
+            if (jobs[selected_job_index].page <= 0)
+            {
                 (*num_jobs)--;  // Decrement job count
             }
         }
@@ -141,7 +167,8 @@ void execute_all_jobs(job* jobs, int* num_jobs) {
     pthread_create(&threads[5], NULL, semaphore_job_execution, &args_semaphore);
 
     // Wait for all threads
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++)
+    {
         pthread_join(threads[i], NULL);
     }
 
