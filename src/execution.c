@@ -1,3 +1,162 @@
+#include "utils.h"
+#include "execution.h"
+
+// Job execution function (for mutex)
+void* mutex_job_execution(void* arg) {
+    execution_args* args = (execution_args*)arg;
+    job* jobs = args->jobs;
+    int* num_jobs = args->num_jobs;
+    pthread_mutex_t* mutex = args->mutex;
+
+    FILE* log_file = fopen("mutex_execution.log", "a");
+    if (!log_file) {
+        perror("Failed to open log file");
+        return NULL;
+    }
+
+    unsigned int elapsed_time = 0;
+
+    while (*num_jobs > 0) {
+        pthread_mutex_lock(mutex);  // Lock mutex for synchronization
+
+        // Process jobs...
+        int selected_job_index = find_next_job(jobs, *num_jobs, "print", elapsed_time);
+        if (selected_job_index != -1) {
+            jobs[selected_job_index].page -= TIME_SLICE;
+            if (jobs[selected_job_index].page <= 0) {
+                (*num_jobs)--;  // Decrement job count
+            }
+        }
+
+        pthread_mutex_unlock(mutex);  // Unlock mutex
+        elapsed_time += TIME_SLICE;
+        usleep(TIME_SLICE * TIME_SCALE);
+    }
+
+    fclose(log_file);
+    return NULL;
+}
+
+// Job execution function (for semaphore)
+void* semaphore_job_execution(void* arg) {
+    execution_args* args = (execution_args*)arg;
+    job* jobs = args->jobs;
+    int* num_jobs = args->num_jobs;
+    sem_t* semaphore = args->semaphore;
+
+    FILE* log_file = fopen("semaphore_execution.log", "a");
+    if (!log_file) {
+        perror("Failed to open log file");
+        return NULL;
+    }
+
+    unsigned int elapsed_time = 0;
+
+    while (*num_jobs > 0) {
+        sem_wait(semaphore);  // Wait for semaphore
+
+        // Process jobs...
+        int selected_job_index = find_next_job(jobs, *num_jobs, "print", elapsed_time);
+        if (selected_job_index != -1) {
+            jobs[selected_job_index].page -= TIME_SLICE;
+            if (jobs[selected_job_index].page <= 0) {
+                (*num_jobs)--;  // Decrement job count
+            }
+        }
+
+        sem_post(semaphore);  // Post semaphore
+        elapsed_time += TIME_SLICE;
+        usleep(TIME_SLICE * TIME_SCALE);
+    }
+
+    fclose(log_file);
+    return NULL;
+}
+
+// Job execution function (for unsynchronized)
+void* unsynced_job_execution(void* arg) {
+    execution_args* args = (execution_args*)arg;
+    job* jobs = args->jobs;
+    int* num_jobs = args->num_jobs;
+
+    FILE* log_file = fopen("unsynced_execution.log", "a");
+    if (!log_file) {
+        perror("Failed to open log file");
+        return NULL;
+    }
+
+    unsigned int elapsed_time = 0;
+
+    while (*num_jobs > 0) {
+        // Process jobs...
+        int selected_job_index = find_next_job(jobs, *num_jobs, "print", elapsed_time);
+        if (selected_job_index != -1) {
+            jobs[selected_job_index].page -= TIME_SLICE;
+            if (jobs[selected_job_index].page <= 0) {
+                (*num_jobs)--;  // Decrement job count
+            }
+        }
+
+        elapsed_time += TIME_SLICE;
+        usleep(TIME_SLICE * TIME_SCALE);
+    }
+
+    fclose(log_file);
+    return NULL;
+}
+
+// Function to manage execution
+void execute_all_jobs(job* jobs, int* num_jobs) {
+    job* jobs_mutex = malloc(*num_jobs * sizeof(job));
+    job* jobs_semaphore = malloc(*num_jobs * sizeof(job));
+    job* jobs_unsync = malloc(*num_jobs * sizeof(job));
+
+    memcpy(jobs_mutex, jobs, *num_jobs * sizeof(job));
+    memcpy(jobs_semaphore, jobs, *num_jobs * sizeof(job));
+    memcpy(jobs_unsync, jobs, *num_jobs * sizeof(job));
+
+    int num_jobs_mutex = *num_jobs;
+    int num_jobs_semaphore = *num_jobs;
+    int num_jobs_unsync = *num_jobs;
+
+    // Synchronization objects
+    pthread_mutex_t mutex;
+    pthread_mutex_init(&mutex, NULL);
+
+    sem_t semaphore;
+    sem_init(&semaphore, 0, 1);
+
+    pthread_t threads[6];
+
+    execution_args args_mutex = {jobs_mutex, &num_jobs_mutex, &mutex, NULL};
+    execution_args args_semaphore = {jobs_semaphore, &num_jobs_semaphore, NULL, &semaphore};
+    execution_args args_unsync = {jobs_unsync, &num_jobs_unsync, NULL, NULL};
+
+    // Create threads for each execution type
+    pthread_create(&threads[0], NULL, unsynced_job_execution, &args_unsync);
+    pthread_create(&threads[1], NULL, unsynced_job_execution, &args_unsync);
+    pthread_create(&threads[2], NULL, mutex_job_execution, &args_mutex);
+    pthread_create(&threads[3], NULL, mutex_job_execution, &args_mutex);
+    pthread_create(&threads[4], NULL, semaphore_job_execution, &args_semaphore);
+    pthread_create(&threads[5], NULL, semaphore_job_execution, &args_semaphore);
+
+    // Wait for all threads
+    for (int i = 0; i < 6; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    // Clean up synchronization objects
+    pthread_mutex_destroy(&mutex);
+    sem_destroy(&semaphore);
+
+    // Free memory
+    free(jobs_mutex);
+    free(jobs_semaphore);
+    free(jobs_unsync);
+}
+
+
+
 /*#include "utils.h"
 #include "execution.h"
 
@@ -291,85 +450,6 @@ void execute_mutex_jobs(job* jobs, int* num_jobs)
     printf("[INFO] Mutex destroyed.\n");
 
     printf("[INFO] Mutex-based job execution completed.\n");
-}*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -541,4 +621,4 @@ void execute_all_jobs(job* jobs, int *num_jobs)
     free(jobs_mutex);
     free(jobs_semaphore);
     free(jobs_unsync);
-}
+}*/
