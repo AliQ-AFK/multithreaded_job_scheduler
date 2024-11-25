@@ -2,44 +2,32 @@
 
 job* initialize_job(int* num_users, int* num_jobs)
 {
-    printf("Enter the number of users:\n");
-    if (scanf("%d", num_users) != 1) return NULL;
-    printf("Enter the number of jobs per user:\n");
-    if (scanf("%d", num_jobs) != 1) return NULL;
+    printf("Enter a positive number of users: ");
+    while (scanf("%d", num_users) != 1 || *num_users <= 0) {
+        printf("Invalid input. Enter a positive number: ");
+        while(getchar() != '\n'); // Clear input buffer
+    }
 
-    // Calculate total number of jobs (users * jobs per user)
+    printf("Enter a positive number of jobs per user: ");
+    while (scanf("%d", num_jobs) != 1 || *num_jobs <= 0) {
+        printf("Invalid input. Enter a positive number: ");
+        while(getchar() != '\n'); // Clear input buffer
+    }
+
     int total_jobs = (*num_users) * (*num_jobs);
     job* jobs = (job*)malloc(total_jobs * sizeof(job));
-    if (jobs == NULL)
-    {
-        fprintf(stderr, "Memory allocation failed\n");
-        return NULL;
+    if (!jobs) return NULL;
+
+    for (int user = 0; user < *num_users; user++) {
+        for (int i = 0; i < *num_jobs; i++) {
+            int job_index = (user * (*num_jobs)) + i;
+            jobs[job_index].user_id = user + 1;
+            strcpy(jobs[job_index].job_type, (rand() % 2) ? "print" : "scan");
+            jobs[job_index].page = rand() % 10 + 1;
+            jobs[job_index].arrival_time = rand() % 20 + 1;
+        }
     }
 
-    // Generate jobs for each user
- for (int user = 0; user < *num_users; user++) {
-    for (int i = 0; i < *num_jobs; i++) {
-        int job_index = (user * (*num_jobs)) + i;
-        jobs[job_index].user_id = user + 1;
-        strcpy(jobs[job_index].job_type, (rand() % 2) ? "print" : "scan"); // Random job type
-        jobs[job_index].page = rand() % 10+1; // Pages reduced to a max of 10
-        jobs[job_index].arrival_time = rand() % 20 + 1; // Reduced arrival time range (1 to 20)
-    }
-}
-
-    // Debugging: Print job details to confirm they are created correctly
-    printf("Number of users: %d\n", *num_users);
-    printf("Number of jobs: %d\n", *num_jobs);
-    for (int i = 0; i < total_jobs; i++)
-    {
-        printf("Job %d: User ID = %d, Type = %s, Pages = %d, Arrival Time = %u\n",
-               i, jobs[i].user_id, jobs[i].job_type, jobs[i].page, jobs[i].arrival_time);
-    }
-
-    // Update total number of jobs,
-    //no need to crteate extra var and all functions use num_job
     *num_jobs = total_jobs;
-
     return jobs;
-
 }
