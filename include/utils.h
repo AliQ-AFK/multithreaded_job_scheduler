@@ -7,8 +7,6 @@
 #include <unistd.h>
 #include <semaphore.h>
 #include <time.h>
-
-// Project headers
 #include "job.h"
 
 // Common defines

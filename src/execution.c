@@ -36,15 +36,14 @@ void* job_execution(void* arg)
         int selected_index = find_next_job(jobs, num_jobs, "print", elapsed_time); // Pass pointer to find print jobs
         if (selected_index != -1)
         {
-            int pages_to_process = (jobs[selected_index].page >= TIME_SLICE) ? 
-                                   TIME_SLICE : jobs[selected_index].page;
-            jobs[selected_index].page -= pages_to_process;
+
+            jobs[selected_index].page -= TIME_SCALE;
 
             // Log detailed job processing information
             fprintf(log_file, "[INFO] Thread %ld: Job selected for User %d (Job ID: %d). Pages processed: %d. "
                                "Pages remaining: %d\n", 
                                thread_id, jobs[selected_index].user_id, selected_index, 
-                               pages_to_process, jobs[selected_index].page);
+                               TIME_SCALE, jobs[selected_index].page);
             fflush(log_file);
 
             // Check if the job is completed
@@ -58,7 +57,7 @@ void* job_execution(void* arg)
                 fflush(log_file);
 
                 // Force decrement if it's the last job and it's completed
-                if (*num_jobs == 0 && jobs[selected_index].page == 0)
+                /*if (*num_jobs == 0 && jobs[selected_index].page == 0)
                 {
                     fprintf(log_file, "[INFO] Thread %ld: Last job for User %d (Job ID: %d) completed. Forcing decrement of num_jobs.\n", 
                             thread_id, jobs[selected_index].user_id, selected_index);
@@ -66,6 +65,7 @@ void* job_execution(void* arg)
                     fprintf(log_file, "[INFO] Thread %ld: Jobs remaining after forced completion: %d\n", thread_id, *num_jobs);
                     fflush(log_file);
                 }
+                
             }
         } 
         else 
@@ -119,7 +119,7 @@ void execute_mutex_jobs(job* jobs, int* num_jobs)
     printf("[INFO] Mutex destroyed.\n");
 
     printf("[INFO] Mutex-based job execution completed.\n");
-}*/
+}
 
 
 
@@ -166,7 +166,7 @@ void execute_mutex_jobs(job* jobs, int* num_jobs)
 
 
 
-/*#include "utils.h"
+#include "utils.h"
 #include "execution.h"
 
 void* job_execution(void* arg)
@@ -374,7 +374,7 @@ void execute_mutex_jobs(job* jobs, int* num_jobs)
 
 
 
-/*#include "utils.h"
+#include "utils.h"
 #include "execution.h"
 
 // Job execution function (generic for all execution types)
@@ -429,9 +429,7 @@ void* job_execution(void* arg)
         int selected_print_index = find_next_job(jobs, *num_jobs, "print", elapsed_time);
         if (selected_print_index != -1)
         {
-            int pages_to_process = (jobs[selected_print_index].page >= TIME_SLICE) ? 
-                                   TIME_SLICE : jobs[selected_print_index].page;
-            jobs[selected_print_index].page -= pages_to_process;
+            jobs[selected_print_index].page -= TIME_SLICE;
 
             fprintf(log_file, "[DEBUG] Processed print job for User %d. Pages remaining: %d\n",
                     jobs[selected_print_index].user_id, jobs[selected_print_index].page);
@@ -448,9 +446,7 @@ void* job_execution(void* arg)
         int selected_scan_index = find_next_job(jobs, *num_jobs, "scan", elapsed_time);
         if (selected_scan_index != -1)
         {
-            int pages_to_process = (jobs[selected_scan_index].page >= TIME_SLICE) ? 
-                                   TIME_SLICE : jobs[selected_scan_index].page;
-            jobs[selected_scan_index].page -= pages_to_process;
+            jobs[selected_print_index].page -= TIME_SLICE;
 
             fprintf(log_file, "[DEBUG] Processed scan job for User %d. Pages remaining: %d\n",
                     jobs[selected_scan_index].user_id, jobs[selected_scan_index].page);
@@ -545,4 +541,4 @@ void execute_all_jobs(job* jobs, int *num_jobs)
     free(jobs_mutex);
     free(jobs_semaphore);
     free(jobs_unsync);
-}*/
+}
