@@ -14,8 +14,19 @@ typedef struct
     sem_t* semaphore;       // Pointer to a semaphore (can be NULL for unsynced or mutex-based)
 } execution_args;
 
+
+
 // Function prototypes for execution logic
-void* job_execution(void* arg); // Generic execution logic for print/scan jobs
-//void execute_all_jobs(job* jobs, int *num_jobs);
-void execute_mutex_jobs(job* jobs, int* num_jobs);
+
+void process_job(job* jobs, int* num_jobs, const char* job_type, unsigned int* elapsed_time, FILE* log_file, pthread_t thread_id);
+
+void* mutex_job_execution(void* arg);
+void* semaphore_job_execution(void* arg);
+void* unsynced_job_execution(void* arg);
+void execute_all_jobs(job* jobs, int* num_jobs);
+void get_current_time(char* buffer, size_t size);
+
+
+
+
 #endif

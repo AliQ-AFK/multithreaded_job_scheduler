@@ -22,8 +22,6 @@ job* initialize_job(int* num_users, int* num_jobs)
         int job_index = (user * (*num_jobs)) + i;
         jobs[job_index].user_id = user + 1;
         strcpy(jobs[job_index].job_type, (rand() % 2) ? "print" : "scan"); // Random job type
-        //strcpy(jobs[job_index].job_type, "print"); // Force all jobs to be of type "print FOR DEBUGGING
-
         jobs[job_index].page = rand() % 10+1; // Pages reduced to a max of 10
         jobs[job_index].arrival_time = rand() % 20 + 1; // Reduced arrival time range (1 to 20)
     }

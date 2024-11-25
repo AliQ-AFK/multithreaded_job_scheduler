@@ -1,6 +1,6 @@
 #include "utils.h"
 
-void schedule_jobs(job* jobs, int *num_jobs)
+/*void schedule_jobs(job* jobs, int *num_jobs)
 {
     unsigned int elapsed_time = 0;
     printf("Scheduling starts...\n");
@@ -74,7 +74,7 @@ void schedule_jobs(job* jobs, int *num_jobs)
     printf("Scheduling ends...\n");
     fflush(stdout);
 }
-
+*/
 int find_next_job(job* jobs, int* num_jobs, const char* type, int elapsed_time)
 {
     printf("[DEBUG] find_next_job called with num_jobs = %d\n", *num_jobs);
@@ -102,8 +102,8 @@ int find_next_job(job* jobs, int* num_jobs, const char* type, int elapsed_time)
     return -1; // No job is ready
 }
 
-// Function to remove a job from the queue
-void remove_job(job* jobs, int* num_jobs, int job_index)
+/*/ Function to remove a job from the queue
+/void remove_job(job* jobs, int* num_jobs, int job_index)
 {
     // Shift all jobs after the removed job to fill the gap
     for (int i = job_index; i < (*num_jobs) - 1; i++)
@@ -112,7 +112,7 @@ void remove_job(job* jobs, int* num_jobs, int job_index)
     }
     // Decrease the job count
     (*num_jobs)--;
-}
+}*/
 
 
 
