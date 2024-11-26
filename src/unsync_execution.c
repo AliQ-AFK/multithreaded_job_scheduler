@@ -40,4 +40,4 @@ void* unsynced_job_execution(void* arg)
     fflush(log_file);
     fclose(log_file);
     return NULL;
-} 
+}

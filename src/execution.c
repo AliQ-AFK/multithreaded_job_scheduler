@@ -17,41 +17,34 @@ void get_current_time(char* buffer, size_t size)
 // Generalized job execution function (handles both print and scan jobs)
 void process_job(job* jobs, int* num_jobs, const char* job_type, unsigned int* elapsed_time, FILE* log_file, pthread_t thread_id)
 {
-    // Find the next job based on job type and elapsed time
     int selected_job_index = find_next_job(jobs, num_jobs, job_type, *elapsed_time);
     if (selected_job_index != -1)
     {
-        // Process the job for 2 pages (time slice)
-        jobs[selected_job_index].page -= 2;  // Access job directly using the pointer
-
-        // Declare timestamp buffer once at the start of the function
+        jobs[selected_job_index].page -= 2;
         char timestamp[20];
-        get_current_time(timestamp, sizeof(timestamp));  // Call the function to get current time
+        get_current_time(timestamp, sizeof(timestamp));
 
-        // Log the current processing of the job
         fprintf(log_file, "[%s] [THREAD %ld] [DEBUG] %-10s Job for User %-3d | Pages Remaining: %-3d | Elapsed Time: %-5u\n",
                 timestamp, thread_id, job_type, jobs[selected_job_index].user_id, jobs[selected_job_index].page, *elapsed_time);
         fflush(log_file);
 
-        // If job is completed (page <= 0)
         if (jobs[selected_job_index].page <= 0)
         {
-            // Job is completed, log and remove it
+            // Remove completed job and shift remaining jobs
+            for (int i = selected_job_index; i < (*num_jobs - 1); i++) {
+                jobs[i] = jobs[i + 1];
+            }
+            (*num_jobs)--;
+
             fprintf(log_file, "[%s] [THREAD %ld] [DEBUG] Completed %-10s Job for User %-3d | Job Removed\n", 
                     timestamp, thread_id, job_type, jobs[selected_job_index].user_id);
             fflush(log_file);
-            (*num_jobs)--;  // Decrement job count
-           
+            *elapsed_time += TIME_SLICE;
         }
         else
         {
-            // Increment elapsed time for the time slice (after each job processing)
             *elapsed_time += TIME_SLICE;
-
-            // Update the arrival time AFTER the elapsed time is incremented
             jobs[selected_job_index].arrival_time = *elapsed_time;
-
-            // Log that we have updated the arrival time
             fprintf(log_file, "[%s] [THREAD %ld] [INFO] %-10s Job for User %-3d | Arrival Time Updated to %-5u\n", 
                     timestamp, thread_id, job_type, jobs[selected_job_index].user_id, jobs[selected_job_index].arrival_time);
             fflush(log_file);
@@ -64,7 +57,7 @@ void process_job(job* jobs, int* num_jobs, const char* job_type, unsigned int* e
         fprintf(log_file, "[%s] [THREAD %ld] [DEBUG] No %-10s Job Found at Time %-5u.\n", 
                 timestamp, thread_id, job_type, *elapsed_time);
         fflush(log_file);
-        *elapsed_time += 1; // Fix: Increment elapsed_time when no job is found
+        *elapsed_time += 1;
     }
 }
 
