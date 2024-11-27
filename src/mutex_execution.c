@@ -16,59 +16,46 @@ void* mutex_job_execution(void* arg)
         return NULL;
     }
 
-    unsigned int elapsed_time = 0;  // Initialize elapsed_time to 0
-    pthread_t thread_id = pthread_self();  // Get the current thread ID
-
-    char timestamp[20];  // Declare timestamp buffer once at the start of the function
+    unsigned int elapsed_time = 0;
+    pthread_t thread_id = pthread_self();
+    char timestamp[20];
 
     while (*num_jobs > 0)
     {
-        fprintf(log_file, "[DEBUG] Remaining jobs: %d\n", *num_jobs);
-        fflush(log_file);
-
-        fprintf(log_file, "[DEBUG] Current job status:\n");
-        for (int i = 0; i < *num_jobs; i++) {
-            fprintf(log_file, "Job %d: Type=%s, Pages=%d\n", 
+        get_current_time(timestamp, sizeof(timestamp));
+        fprintf(log_file, "[DEBUG] [%s] [THREAD %ld] Remaining Jobs: %d\n", timestamp, thread_id, *num_jobs);
+        for (int i = 0; i < *num_jobs; i++)
+        {
+            fprintf(log_file, "  [DEBUG] Job %d: Type=%s, Pages=%d\n",
                     i, jobs[i].job_type, jobs[i].page);
         }
         fflush(log_file);
 
-        get_current_time(timestamp, sizeof(timestamp));  // Get the current time
-
-        // Lock for print jobs
+        // Print job processing
         pthread_mutex_lock(print_mutex);
         fprintf(log_file, "[%s] [THREAD %ld] [INFO] Print Mutex Locked. Processing Print Jobs...\n", timestamp, thread_id);
-        fflush(log_file);
-
-        // Process print jobs
         process_job(jobs, num_jobs, "print", &elapsed_time, log_file, thread_id);
-
-        // Unlock print mutex
         pthread_mutex_unlock(print_mutex);
-        fprintf(log_file, "[%s] [THREAD %ld] [INFO] Print Mutex Unlocked. Time Slice Completed.\n", timestamp, thread_id);
+        fprintf(log_file, "[%s] [THREAD %ld] [INFO] Print Mutex Unlocked.\n", timestamp, thread_id);
         fflush(log_file);
 
-        // Lock for scan jobs
+        // Scan job processing
         pthread_mutex_lock(scan_mutex);
         fprintf(log_file, "[%s] [THREAD %ld] [INFO] Scan Mutex Locked. Processing Scan Jobs...\n", timestamp, thread_id);
-        fflush(log_file);
-
-        // Process scan jobs
         process_job(jobs, num_jobs, "scan", &elapsed_time, log_file, thread_id);
-
-        // Unlock scan mutex
         pthread_mutex_unlock(scan_mutex);
-        fprintf(log_file, "[%s] [THREAD %ld] [INFO] Scan Mutex Unlocked. Time Slice Completed.\n", timestamp, thread_id);
+        fprintf(log_file, "[%s] [THREAD %ld] [INFO] Scan Mutex Unlocked.\n", timestamp, thread_id);
         fflush(log_file);
 
-        // Continue with the time slice
-        usleep(TIME_SLICE * TIME_SCALE);
+        // Elapsed time update
+        elapsed_time += TIME_SLICE;
+        fprintf(log_file, "[%s] [INFO] Elapsed Time: %dms\n", timestamp, elapsed_time);
+        fflush(log_file);
 
-        // Add a small sleep to prevent busy-waiting
-        usleep(1000);
+        usleep(TIME_SLICE * TIME_SCALE);
     }
 
-    fprintf(log_file, "\033[32m[%s] [THREAD %ld] [SUCCESS] Mutex Job Execution Complete!\033[0m\n", timestamp, thread_id);  // Green Success Message
+    fprintf(log_file, "\033[32m[%s] [THREAD %ld] [SUCCESS] Mutex Job Execution Complete!\033[0m\n", timestamp, thread_id);
     fflush(log_file);
     fclose(log_file);
     return NULL;

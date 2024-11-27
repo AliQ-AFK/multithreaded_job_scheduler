@@ -31,7 +31,8 @@ void process_job(job* jobs, int* num_jobs, const char* job_type, unsigned int* e
         if (jobs[selected_job_index].page <= 0)
         {
             // Remove completed job and shift remaining jobs
-            for (int i = selected_job_index; i < (*num_jobs - 1); i++) {
+            for (int i = selected_job_index; i < (*num_jobs - 1); i++)
+            {
                 jobs[i] = jobs[i + 1];
             }
             (*num_jobs)--;

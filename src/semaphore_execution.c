@@ -3,7 +3,7 @@
 
 void* semaphore_job_execution(void* arg)
 {
-  execution_args* args = (execution_args*)arg;
+    execution_args* args = (execution_args*)arg;
     job* jobs = args->jobs;
     int* num_jobs = args->num_jobs;
     sem_t* print_semaphore = args->print_semaphore;
@@ -16,48 +16,46 @@ void* semaphore_job_execution(void* arg)
         return NULL;
     }
 
-    unsigned int elapsed_time = 0;  // Initialize elapsed_time to 0
-    pthread_t thread_id = pthread_self();  // Get the current thread ID
-
-    char timestamp[20];  // Declare timestamp buffer once at the start of the function
+    unsigned int elapsed_time = 0;
+    pthread_t thread_id = pthread_self();
+    char timestamp[20];
 
     while (*num_jobs > 0)
     {
-        get_current_time(timestamp, sizeof(timestamp));  // Get the current time
+        get_current_time(timestamp, sizeof(timestamp));
+        fprintf(log_file, "[DEBUG] [%s] [THREAD %ld] Remaining Jobs: %d\n", timestamp, thread_id, *num_jobs);
+        for (int i = 0; i < *num_jobs; i++)
+        {
+            fprintf(log_file, "  [DEBUG] Job %d: Type=%s, Pages=%d\n",
+                    i, jobs[i].job_type, jobs[i].page);
+        }
+        fflush(log_file);
 
-        // Wait for semaphore for print jobs
+        // Print job processing
         sem_wait(print_semaphore);
-        fprintf(log_file, "[%s] [THREAD %ld] [INFO] Print Semaphore Wait Completed. Processing Print Jobs...\n", timestamp, thread_id);
-        fflush(log_file);
-
-        // Process print jobs
+        fprintf(log_file, "[%s] [THREAD %ld] [INFO] Print Semaphore Acquired. Processing Print Jobs...\n", timestamp, thread_id);
         process_job(jobs, num_jobs, "print", &elapsed_time, log_file, thread_id);
-
-        sem_post(print_semaphore);  // Post semaphore for print jobs
-        fprintf(log_file, "[%s] [THREAD %ld] [INFO] Print Semaphore Posted. Time Slice Completed.\n", timestamp, thread_id);
+        sem_post(print_semaphore);
+        fprintf(log_file, "[%s] [THREAD %ld] [INFO] Print Semaphore Released.\n", timestamp, thread_id);
         fflush(log_file);
 
-        // Wait for semaphore for scan jobs
+        // Scan job processing
         sem_wait(scan_semaphore);
-        fprintf(log_file, "[%s] [THREAD %ld] [INFO] Scan Semaphore Wait Completed. Processing Scan Jobs...\n", timestamp, thread_id);
-        fflush(log_file);
-
-        // Process scan jobs
+        fprintf(log_file, "[%s] [THREAD %ld] [INFO] Scan Semaphore Acquired. Processing Scan Jobs...\n", timestamp, thread_id);
         process_job(jobs, num_jobs, "scan", &elapsed_time, log_file, thread_id);
-
-        sem_post(scan_semaphore);  // Post semaphore for scan jobs
-        fprintf(log_file, "[%s] [THREAD %ld] [INFO] Scan Semaphore Posted. Time Slice Completed.\n", timestamp, thread_id);
+        sem_post(scan_semaphore);
+        fprintf(log_file, "[%s] [THREAD %ld] [INFO] Scan Semaphore Released.\n", timestamp, thread_id);
         fflush(log_file);
 
-        // Continue with the time slice
+        // Elapsed time update
         elapsed_time += TIME_SLICE;
-        usleep(TIME_SLICE * TIME_SCALE);
+        fprintf(log_file, "[%s] [INFO] Elapsed Time: %dms\n", timestamp, elapsed_time);
+        fflush(log_file);
 
-        // Add a small sleep to prevent busy-waiting
-        usleep(1000);
+        usleep(TIME_SLICE * TIME_SCALE);
     }
 
-    fprintf(log_file, "\033[32m[%s] [THREAD %ld] [SUCCESS] Semaphore Job Execution Complete!\033[0m\n", timestamp, thread_id);  // Green Success Message
+    fprintf(log_file, "\033[32m[%s] [THREAD %ld] [SUCCESS] Semaphore Job Execution Complete!\033[0m\n", timestamp, thread_id);
     fflush(log_file);
     fclose(log_file);
     return NULL;
