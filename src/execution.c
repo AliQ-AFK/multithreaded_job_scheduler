@@ -61,7 +61,7 @@ void process_job(job* jobs, int* num_jobs, const char* job_type, unsigned int* e
         *elapsed_time += 1;
     }
 }
-
+#ifndef TESTING
 void execute_all_jobs(job* jobs, int* num_jobs)
 {
     job* jobs_mutex = malloc(*num_jobs * sizeof(job));
@@ -117,3 +117,4 @@ void execute_all_jobs(job* jobs, int* num_jobs)
     free(jobs_semaphore);
     free(jobs_unsync);
 }
+#endif
