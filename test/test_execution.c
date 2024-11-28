@@ -1,12 +1,12 @@
 #include "job.h"
 #include "execution.h"
-#include "test.h"
+#include "test_utils.h"
 #include "utils.h"
-
-
+#include <sys/stat.h>
+#include <stdlib.h>
 
 // Test: Process a single ready job
-void test_process_job_with_one_ready_job()
+void test_process_job_with_one_ready_job(FILE *log_file, TestStats *stats)
 {
     job jobs[1] = {
         { .user_id = 1, .job_type = "print", .page = 5, .arrival_time = 0 }
@@ -22,32 +22,51 @@ void test_process_job_with_one_ready_job()
     CU_ASSERT_EQUAL(jobs[0].page, 3);
     CU_ASSERT_EQUAL(jobs[0].arrival_time, elapsed_time);
 
-    log_test_result("test_process_job_with_one_ready_job", passed);
+    log_test_result(log_file, stats, "test_process_job_with_one_ready_job", passed);
 }
 
-// Main function to run tests
 int main()
 {
-    log_file = fopen("test_execution.log", "w");
+    // Ensure the logs directory exists
+    mkdir("logs", 0777);
+
+    // Open the log file
+    FILE *log_file = fopen("logs/test_execution.log", "w");
     if (!log_file)
     {
-        printf(COLOR_RED "Failed to open log file.\n" COLOR_RESET);
+        perror("Failed to open log file");
         return 1;
     }
 
-    log_header("Job Execution Tests");
+    // Initialize the TestStats struct
+    TestStats stats = {0};
 
-    CU_initialize_registry();
+    log_header(log_file, "Job Execution Tests");
+
+    // Initialize the CUnit registry
+    if (CU_initialize_registry() != CUE_SUCCESS) {
+        perror("CUnit initialization failed");
+        fclose(log_file);
+        return 1;
+    }
+
     CU_pSuite suite = CU_add_suite("Execution Tests", NULL, NULL);
+    if (!suite) {
+        CU_cleanup_registry();
+        fclose(log_file);
+        return 1;
+    }
 
-    CU_add_test(suite, "test_process_job_with_one_ready_job", test_process_job_with_one_ready_job);
+    // Add the test case with the new signature
+    CU_add_test(suite, "test_process_job_with_one_ready_job",
+                (CU_TestFunc)(void(*)(void))test_process_job_with_one_ready_job);
 
     clock_t start_time = clock();
 
     CU_basic_set_mode(CU_BRM_VERBOSE);
     CU_basic_run_tests();
 
-    log_test_summary(start_time);
+    log_test_summary(log_file, &stats, start_time);
 
     CU_cleanup_registry();
     fclose(log_file);

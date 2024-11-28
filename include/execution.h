@@ -4,6 +4,7 @@
 #include "job.h"
 #include <semaphore.h>
 #include <pthread.h>
+#include "utils.h"
 //this header is for code reusability and readibility :)
 // Struct to hold execution arguments
 typedef struct {
