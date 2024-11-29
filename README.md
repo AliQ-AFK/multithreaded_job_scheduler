@@ -4,7 +4,7 @@ A concurrent job processing system implementing multiple synchronization mechani
 
 ## 📺 Demo
 
-![Job Processing Demo](demo.gif)
+![Job Processing Demo](https://asciinema.org/connect/e88203ab-430f-41ef-9925-fe9c6f6fe79d)
 
 Example output showing:
 - Job generation
