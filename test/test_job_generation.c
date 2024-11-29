@@ -6,19 +6,24 @@
 // Test: Generate jobs with valid attributes
 void test_initialize_job_valid_attributes(FILE *log_file, TestStats *stats)
 {
+    if (!log_file || !stats) {
+        printf("Error: NULL pointers passed to test\n");
+        return;
+    }
+
     int num_users = 3;
     int num_jobs = 2;
-
+    
     job *jobs = initialize_job(&num_users, &num_jobs);
-
+    
     int passed = (jobs != NULL);
-
-    CU_ASSERT(jobs != NULL);
+    
+    if (jobs) {
+        // Your tests here
+        free(jobs);
+    }
 
     log_test_result(log_file, stats, "test_initialize_job_valid_attributes", passed);
-
-    if (jobs)
-        free(jobs);
 }
 
 int main()
