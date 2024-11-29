@@ -1,4 +1,4 @@
-# Compiler
+
 CC = gcc
 
 # Development flags (with testing)
@@ -18,7 +18,6 @@ SANITIZER_FLAGS += -fsanitize=leak      # Memory leaks
 # Debug flags
 DEBUG_FLAGS = -g -fno-omit-frame-pointer  # Better debug info and stack traces
 
-# Warning flags
 WARN_FLAGS = -Wall -Wextra -Werror -Wformat=2 -Wformat-security
 
 CFLAGS = $(WARN_FLAGS) $(SANITIZER_FLAGS) $(DEBUG_FLAGS)
