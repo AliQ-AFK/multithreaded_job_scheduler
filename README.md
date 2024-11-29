@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20macOS-orange)](#)
 
-A highly efficient, multithreaded job processing system demonstrating the power of concurrency using multiple synchronization mechanisms, including mutexes and semaphores.
+A highly efficient, multithreaded job processing system stimulation demonstrating the power of concurrency using multiple synchronization mechanisms, including mutexes and semaphores.
 
 💡 **If you like this project, please [⭐ star the repository](https://github.com/AliQ-AFK/multithreaded_job_scheduler/stargazers) to show your support!**
 
