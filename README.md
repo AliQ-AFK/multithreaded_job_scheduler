@@ -235,4 +235,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Author
 
-* **AliQ-AFK** - *Initial work* - [GitHub](https://github.com/AliQ-AFK)# Random-job-sync
+* **AliQ-AFK** - *Initial work* - [GitHub](https://github.com/AliQ-AFK)# multithreaded_job_scheduler
