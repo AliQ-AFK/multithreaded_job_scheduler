@@ -12,7 +12,7 @@ A highly efficient, multithreaded job processing system demonstrating the power 
 
 ## 📺 Demo
 
-![Job Processing Demo](https://github.com/AliQ-AFK/multithreaded_job_scheduler/issues/1#issue-2705805302)
+![Job Processing Demo](https://github.com/user-attachments/assets/7dcb909c-7f7c-4dba-b39b-718576ff490b)
 
 ### Steps Shown in the Demo:
 1. Dynamic job generation and arrival.
