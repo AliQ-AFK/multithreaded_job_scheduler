@@ -9,10 +9,9 @@ void* mutex_job_execution(void* arg)
     pthread_mutex_t* print_mutex = args->print_mutex;
     pthread_mutex_t* scan_mutex = args->scan_mutex;
 
-    FILE* log_file = fopen("mutex_execution.log", "a");
+    FILE* log_file = open_log_file("mutex_execution.log", "a");
     if (!log_file)
     {
-        perror("Failed to open log file");
         return NULL;
     }
 

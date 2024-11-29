@@ -13,10 +13,9 @@
 #define TIME_SCALE 100000  // 0.1 seconds = 100000 microseconds
 #define TIME_SLICE 2
 #define MAX_TIME 100
-
-
+#define LOG_DIR "log"
 
 int find_next_job(job* jobs, int* num_jobs, const char* type, int elapsed_time);
-
+FILE* open_log_file(const char* filename, const char* mode);
 
 #endif 

@@ -13,7 +13,17 @@ void get_current_time(char* buffer, size_t size)
 
     strftime(buffer, size, "%Y-%m-%d %H:%M:%S", timeinfo);  // Format time into string
 }
-
+FILE* open_log_file(const char* filename, const char* mode)
+{
+    char path[256];
+    snprintf(path, sizeof(path), "%s/%s", LOG_DIR, filename);
+    FILE* file = fopen(path, mode);
+    if (!file)
+    {
+        perror("Failed to open log file");
+    }
+    return file;
+}
 // Generalized job execution function (handles both print and scan jobs)
 void process_job(job* jobs, int* num_jobs, const char* job_type, unsigned int* elapsed_time, FILE* log_file, pthread_t thread_id, execution_summary* summary)
 {

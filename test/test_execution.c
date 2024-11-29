@@ -213,17 +213,11 @@ void test_unsync_execution(FILE *log_file, TestStats *stats)
 
 int main()
 {
-    // Ensure the logs directory exists
-    mkdir("logs", 0777);
-
-    // Open the log file
-    FILE *log_file = fopen("logs/test_execution.log", "w");
+    FILE* log_file = open_log_file("test_execution.log", "a");
     if (!log_file)
     {
-        perror("Failed to open log file");
         return 1;
     }
-
     // Initialize the TestStats struct
     TestStats stats = {0};
 
@@ -234,7 +228,7 @@ int main()
     {
         perror("CUnit initialization failed");
         fclose(log_file);
-        return 1;
+        return 2;
     }
 
     CU_pSuite suite = CU_add_suite("Execution Tests", NULL, NULL);
@@ -242,7 +236,7 @@ int main()
     {
         CU_cleanup_registry();
         fclose(log_file);
-        return 1;
+        return 3;
     }
 
     // Add the test case
@@ -251,7 +245,7 @@ int main()
     {
         CU_cleanup_registry();
         fclose(log_file);
-        return 1;
+        return 4;
     }
 
     // Add all test cases

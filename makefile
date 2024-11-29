@@ -54,6 +54,13 @@ TEST_EXEC = $(patsubst $(TEST_DIR)/%.c, $(BIN_DIR)/%, $(TEST_SRC))
 TEST_UTILS_SRC = $(TEST_DIR)/test_utils.c
 TEST_UTILS_OBJ = $(OBJ_DIR)/test/test_utils.o
 
+# Add LOG_DIR if not already defined
+LOG_DIR = log
+
+# Create log directory if it doesn't exist
+$(LOG_DIR):
+	@mkdir -p $(LOG_DIR)
+
 # Default rule
 all: $(BIN_DIR)/main
 
@@ -90,7 +97,7 @@ $(BIN_DIR):
 # User-friendly targets
 .PHONY: run test-jobs test-execution help prod clean
 
-run: $(BIN_DIR)/main
+run: $(BIN_DIR)/main | $(LOG_DIR)
 	@echo "\n=== Running Main Program (Job Processing System) ===\n"
 	./bin/main
 
@@ -127,7 +134,13 @@ help:
 # Clean
 clean:
 	@echo "Cleaning up..."
-	rm -rf $(OBJ_DIR) $(BIN_DIR) *.log
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
+
+clean-logs:
+	@echo "Cleaning all logs..."
+	rm -rf $(LOG_DIR)/*
+
+clean-all: clean clean-logs
 
 .PHONY: all clean tests run-test-%
 

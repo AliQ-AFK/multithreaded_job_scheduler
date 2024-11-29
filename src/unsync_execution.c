@@ -10,10 +10,9 @@ void* unsynced_job_execution(void* arg)
     job* jobs = args->jobs;
     int* num_jobs = args->num_jobs;
 
-    FILE* log_file = fopen("unsynced_execution.log", "a");
+     FILE* log_file = open_log_file("unsync_execution.log", "a");
     if (!log_file)
     {
-        perror("Failed to open log file");
         return NULL;
     }
 

@@ -9,6 +9,8 @@
 #include <CUnit/Basic.h>
 #include <stdlib.h>
 #include <string.h>
+#define __USE_XOPEN
+#include <time.h>
 
 // ANSI color codes for pretty terminal output
 #define COLOR_GREEN "\033[32m"

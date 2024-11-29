@@ -29,14 +29,9 @@ void test_initialize_job_valid_attributes(FILE *log_file, TestStats *stats)
 
 int main()
 {
-    // Ensure the logs directory exists
-    mkdir("logs", 0777);
-
-    // Open the log file
-    FILE *log_file = fopen("logs/test_job_generation.log", "w");
+    FILE* log_file = open_log_file("test_job_generation.log", "a");
     if (!log_file)
     {
-        perror("Failed to open log file");
         return 1;
     }
 
@@ -50,7 +45,7 @@ int main()
     {
         perror("CUnit initialization failed");
         fclose(log_file);
-        return 1;
+        return 2;
     }
 
     CU_pSuite suite = CU_add_suite("Job Generation Tests", NULL, NULL);
@@ -58,7 +53,7 @@ int main()
     {
         CU_cleanup_registry();
         fclose(log_file);
-        return 1;
+        return 3;
     }
 
     // Add the test case with the new signature

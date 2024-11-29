@@ -9,13 +9,11 @@ void* semaphore_job_execution(void* arg)
     sem_t* print_semaphore = args->print_semaphore;
     sem_t* scan_semaphore = args->scan_semaphore;
 
-    FILE* log_file = fopen("semaphore_execution.log", "a");
+    FILE* log_file = open_log_file("Semaphore_execution.log", "a");
     if (!log_file)
     {
-        perror("Failed to open log file");
         return NULL;
     }
-
     unsigned int elapsed_time = 0;
     pthread_t thread_id = pthread_self();
     char timestamp[20];
@@ -66,7 +64,7 @@ void* semaphore_job_execution(void* arg)
     fprintf(log_file, "Print Jobs Completed: %d\n", local_summary.print_jobs_completed);
     fprintf(log_file, "Scan Jobs Completed: %d\n", local_summary.scan_jobs_completed);
     fprintf(log_file, "Total Execution Time: %ums\n", local_summary.total_time);
-    fprintf(log_file, "%s================================%s\n\n", 
+    fprintf(log_file, "%s=====================================%s\n\n", 
         SUCCESS_COLOR, COLOR_RESET);
 
     fclose(log_file);

@@ -87,14 +87,9 @@ void test_find_next_job(FILE *log_file, TestStats *stats)
 
 int main()
 {
-    // Create logs directory if it doesn't exist
-    mkdir("logs", 0777);
-
-    // Open log file
-    FILE *log_file = fopen("logs/test_scheduler.log", "w");
+    FILE* log_file = open_log_file("test_scheduler.log", "a");
     if (!log_file)
     {
-        perror("Failed to open log file");
         return 1;
     }
 
