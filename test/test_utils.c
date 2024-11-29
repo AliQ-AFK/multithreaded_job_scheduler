@@ -1,6 +1,7 @@
 #include "test_utils.h"
 
-void log_header(FILE *log_file, const char *title) {
+void log_header(FILE *log_file, const char *title)
+{
     time_t now = time(NULL);
     char time_buffer[30];
     strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", localtime(&now));
@@ -11,7 +12,8 @@ void log_header(FILE *log_file, const char *title) {
     fprintf(log_file, "===============================\n\n");
 }
 
-void log_test_result(FILE *log_file, TestStats *stats, const char *test_name, int passed) {
+void log_test_result(FILE *log_file, TestStats *stats, const char *test_name, int passed)
+{
     stats->total_tests++;
 
     time_t now = time(NULL);
@@ -20,11 +22,15 @@ void log_test_result(FILE *log_file, TestStats *stats, const char *test_name, in
 
     fprintf(log_file, "Test: %s\n", test_name);
     fprintf(log_file, "Timestamp: %s\n", time_buffer);
-    if (passed) {
+    if (passed)
+    {
         stats->passed_tests++;
         fprintf(log_file, "[PASS] %s\n", test_name);
         printf(COLOR_GREEN "[PASS] %s\n" COLOR_RESET, test_name);
-    } else {
+    }
+    
+    else
+    {
         stats->failed_tests++;
         fprintf(log_file, "[FAIL] %s\n", test_name);
         printf(COLOR_RED "[FAIL] %s\n" COLOR_RESET, test_name);
@@ -32,7 +38,8 @@ void log_test_result(FILE *log_file, TestStats *stats, const char *test_name, in
     fprintf(log_file, "---------------------------------\n");
 }
 
-void log_test_summary(FILE *log_file, TestStats *stats, clock_t start_time) {
+void log_test_summary(FILE *log_file, TestStats *stats, clock_t start_time)
+{
     clock_t end_time = clock();
     double elapsed_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
 

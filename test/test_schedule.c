@@ -7,14 +7,16 @@
 
 void test_find_next_job(FILE *log_file, TestStats *stats)
 {
-    if (!log_file || !stats) {
+    if (!log_file || !stats)
+    {
         printf("Error: NULL pointers passed to test\n");
         return;
     }
 
     // Test case 1: Find print job
     {
-        job jobs[] = {
+        job jobs[] =
+        {
             {.user_id = 1, .job_type = "print", .page = 5, .arrival_time = 0},
             {.user_id = 2, .job_type = "scan", .page = 3, .arrival_time = 1},
             {.user_id = 3, .job_type = "print", .page = 4, .arrival_time = 2}
@@ -28,7 +30,8 @@ void test_find_next_job(FILE *log_file, TestStats *stats)
 
     // Test case 2: Find scan job
     {
-        job jobs[] = {
+        job jobs[] =
+        {
             {.user_id = 1, .job_type = "print", .page = 5, .arrival_time = 0},
             {.user_id = 2, .job_type = "scan", .page = 3, .arrival_time = 1},
             {.user_id = 3, .job_type = "print", .page = 4, .arrival_time = 2}
@@ -42,7 +45,8 @@ void test_find_next_job(FILE *log_file, TestStats *stats)
 
     // Test case 3: No jobs ready (arrival time)
     {
-        job jobs[] = {
+        job jobs[] =
+        {
             {.user_id = 1, .job_type = "print", .page = 5, .arrival_time = 10},
             {.user_id = 2, .job_type = "scan", .page = 3, .arrival_time = 11}
         };
@@ -55,7 +59,8 @@ void test_find_next_job(FILE *log_file, TestStats *stats)
 
     // Test case 4: No matching job type
     {
-        job jobs[] = {
+        job jobs[] =
+        {
             {.user_id = 1, .job_type = "print", .page = 5, .arrival_time = 0},
             {.user_id = 2, .job_type = "print", .page = 3, .arrival_time = 1}
         };
@@ -87,7 +92,8 @@ int main()
 
     // Open log file
     FILE *log_file = fopen("logs/test_scheduler.log", "w");
-    if (!log_file) {
+    if (!log_file)
+    {
         perror("Failed to open log file");
         return 1;
     }
@@ -97,14 +103,16 @@ int main()
     clock_t start_time = clock();
 
     // Initialize CUnit test registry
-    if (CUE_SUCCESS != CU_initialize_registry()) {
+    if (CUE_SUCCESS != CU_initialize_registry())
+    {
         fclose(log_file);
         return CU_get_error();
     }
 
     // Add suite to registry
     CU_pSuite suite = CU_add_suite("Scheduler Tests", NULL, NULL);
-    if (!suite) {
+    if (!suite)
+    {
         CU_cleanup_registry();
         fclose(log_file);
         return CU_get_error();
@@ -115,7 +123,8 @@ int main()
 
     // Add tests to suite
     if (NULL == CU_add_test(suite, "test_find_next_job", 
-                           (CU_TestFunc)test_find_next_job)) {
+                           (CU_TestFunc)test_find_next_job))
+    {
         CU_cleanup_registry();
         fclose(log_file);
         return CU_get_error();

@@ -22,7 +22,8 @@
 #define SUCCESS_COLOR COLOR_GREEN
 
 // First define execution_summary struct
-typedef struct {
+typedef struct
+{
     int total_jobs_processed;
     int print_jobs_completed;
     int scan_jobs_completed;
@@ -31,7 +32,8 @@ typedef struct {
 } execution_summary;
 
 // Then use it in execution_args struct
-typedef struct {
+typedef struct
+{
     job* jobs;               
     int* num_jobs;           
     pthread_mutex_t* print_mutex;    

@@ -6,7 +6,8 @@
 // Test: Generate jobs with valid attributes
 void test_initialize_job_valid_attributes(FILE *log_file, TestStats *stats)
 {
-    if (!log_file || !stats) {
+    if (!log_file || !stats)
+    {
         printf("Error: NULL pointers passed to test\n");
         return;
     }
@@ -18,8 +19,8 @@ void test_initialize_job_valid_attributes(FILE *log_file, TestStats *stats)
     
     int passed = (jobs != NULL);
     
-    if (jobs) {
-        // Your tests here
+    if (jobs)
+    {
         free(jobs);
     }
 
@@ -45,14 +46,16 @@ int main()
     log_header(log_file, "Job Generation Tests");
 
     // Initialize the CUnit registry
-    if (CU_initialize_registry() != CUE_SUCCESS) {
+    if (CU_initialize_registry() != CUE_SUCCESS)
+    {
         perror("CUnit initialization failed");
         fclose(log_file);
         return 1;
     }
 
     CU_pSuite suite = CU_add_suite("Job Generation Tests", NULL, NULL);
-    if (!suite) {
+    if (!suite)
+    {
         CU_cleanup_registry();
         fclose(log_file);
         return 1;

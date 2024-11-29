@@ -1,4 +1,4 @@
-#include "job.h"
+
 #include "execution.h"
 #include "test_utils.h"
 #include "utils.h"
@@ -8,13 +8,15 @@
 // Test: Process a single ready job
 void test_process_job_with_one_ready_job(FILE *log_file, TestStats *stats)
 {
-    if (!log_file || !stats) {
+    if (!log_file || !stats) 
+    {
         printf("Error: NULL pointers passed to test\n");
         return;
     }
 
     // Create a test job
-    job jobs[1] = {
+    job jobs[1] =
+    {
         { .user_id = 1, .job_type = "print", .page = 5, .arrival_time = 0 }
     };
     int num_jobs = 1;
@@ -22,13 +24,14 @@ void test_process_job_with_one_ready_job(FILE *log_file, TestStats *stats)
 
     // Create a temporary log file for process_job
     FILE *temp_log = fopen("temp_execution.log", "w");
-    if (!temp_log) {
+    if (!temp_log)
+    {
         fprintf(log_file, "Failed to create temporary log file\n");
         return;
     }
 
     // Process the job
-    process_job(jobs, &num_jobs, "print", &elapsed_time, temp_log, pthread_self());
+    process_job(jobs, &num_jobs, "print", &elapsed_time, temp_log, pthread_self(), NULL);
 
     // Close temporary log
     fclose(temp_log);
@@ -46,13 +49,15 @@ void test_process_job_with_one_ready_job(FILE *log_file, TestStats *stats)
 // Test mutex execution
 void test_mutex_execution(FILE *log_file, TestStats *stats)
 {
-    if (!log_file || !stats) {
+    if (!log_file || !stats) 
+    {
         printf("Error: NULL pointers passed to test\n");
         return;
     }
 
     // Setup test data
-    job jobs[3] = {
+    job jobs[3] = 
+    {
         { .user_id = 1, .job_type = "print", .page = 4, .arrival_time = 0 },
         { .user_id = 2, .job_type = "scan", .page = 6, .arrival_time = 0 },
         { .user_id = 3, .job_type = "print", .page = 2, .arrival_time = 0 }
@@ -64,7 +69,8 @@ void test_mutex_execution(FILE *log_file, TestStats *stats)
     pthread_mutex_t scan_mutex = PTHREAD_MUTEX_INITIALIZER;
 
     // Setup execution args
-    execution_args args = {
+    execution_args args = 
+    {
         .jobs = jobs,
         .num_jobs = &num_jobs,
         .print_mutex = &print_mutex,
@@ -99,13 +105,15 @@ void test_mutex_execution(FILE *log_file, TestStats *stats)
 // Test semaphore execution
 void test_semaphore_execution(FILE *log_file, TestStats *stats)
 {
-    if (!log_file || !stats) {
+    if (!log_file || !stats) 
+    {
         printf("Error: NULL pointers passed to test\n");
         return;
     }
 
     // Setup test data
-    job jobs[3] = {
+    job jobs[3] = 
+    {
         { .user_id = 1, .job_type = "print", .page = 4, .arrival_time = 0 },
         { .user_id = 2, .job_type = "scan", .page = 6, .arrival_time = 0 },
         { .user_id = 3, .job_type = "print", .page = 2, .arrival_time = 0 }
@@ -118,7 +126,8 @@ void test_semaphore_execution(FILE *log_file, TestStats *stats)
     sem_init(&scan_semaphore, 0, 1);
 
     // Setup execution args
-    execution_args args = {
+    execution_args args = 
+    {
         .jobs = jobs,
         .num_jobs = &num_jobs,
         .print_mutex = NULL,
@@ -129,7 +138,8 @@ void test_semaphore_execution(FILE *log_file, TestStats *stats)
 
     // Create temporary log file
     FILE *temp_log = fopen("temp_semaphore.log", "w");
-    if (!temp_log) {
+    if (!temp_log)
+    {
         fprintf(log_file, "Failed to create temporary log file\n");
         return;
     }
@@ -153,13 +163,15 @@ void test_semaphore_execution(FILE *log_file, TestStats *stats)
 // Test unsynchronized execution
 void test_unsync_execution(FILE *log_file, TestStats *stats)
 {
-    if (!log_file || !stats) {
+    if (!log_file || !stats)
+    {
         printf("Error: NULL pointers passed to test\n");
         return;
     }
 
     // Setup test data
-    job jobs[3] = {
+    job jobs[3] = 
+    {
         { .user_id = 1, .job_type = "print", .page = 4, .arrival_time = 0 },
         { .user_id = 2, .job_type = "scan", .page = 6, .arrival_time = 0 },
         { .user_id = 3, .job_type = "print", .page = 2, .arrival_time = 0 }
@@ -167,7 +179,8 @@ void test_unsync_execution(FILE *log_file, TestStats *stats)
     int num_jobs = 3;
 
     // Setup execution args
-    execution_args args = {
+    execution_args args =
+    {
         .jobs = jobs,
         .num_jobs = &num_jobs,
         .print_mutex = NULL,
@@ -178,7 +191,8 @@ void test_unsync_execution(FILE *log_file, TestStats *stats)
 
     // Create temporary log file
     FILE *temp_log = fopen("temp_unsync.log", "w");
-    if (!temp_log) {
+    if (!temp_log)
+    {
         fprintf(log_file, "Failed to create temporary log file\n");
         return;
     }
@@ -216,14 +230,16 @@ int main()
     log_header(log_file, "Job Execution Tests");
 
     // Initialize the CUnit registry
-    if (CU_initialize_registry() != CUE_SUCCESS) {
+    if (CU_initialize_registry() != CUE_SUCCESS)
+    {
         perror("CUnit initialization failed");
         fclose(log_file);
         return 1;
     }
 
     CU_pSuite suite = CU_add_suite("Execution Tests", NULL, NULL);
-    if (!suite) {
+    if (!suite)
+    {
         CU_cleanup_registry();
         fclose(log_file);
         return 1;

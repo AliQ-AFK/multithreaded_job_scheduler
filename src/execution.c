@@ -31,9 +31,11 @@ void process_job(job* jobs, int* num_jobs, const char* job_type, unsigned int* e
         if (jobs[selected_job_index].page <= 0)
         {
             // Update summary when job completes
-            if (strcmp(job_type, "print") == 0) {
+            if (strcmp(job_type, "print") == 0)
+            {
                 summary->print_jobs_completed++;
-            } else {
+            } else
+            {
                 summary->scan_jobs_completed++;
             }
             summary->total_jobs_processed++;
