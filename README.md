@@ -4,7 +4,7 @@ A concurrent job processing system implementing multiple synchronization mechani
 
 ## 📺 Demo
 
-![Job Processing Demo]()
+![Job Processing Demo](https://github.com/AliQ-AFK/multithreaded_job_scheduler/issues/1#issue-2705805302)
 
 Example output showing:
 - Job generation
