@@ -6,20 +6,44 @@
 #include <pthread.h>
 #include "utils.h"
 //this header is for code reusability and readibility :)
-// Struct to hold execution arguments
-typedef struct {
-    job* jobs;               // Pointer to the array of jobs
-    int* num_jobs;           // Pointer to the number of jobs
-    pthread_mutex_t* print_mutex;    // Mutex for print jobs (if using mutexes)
-    pthread_mutex_t* scan_mutex;     // Mutex for scan jobs (if using mutexes)
-    sem_t* print_semaphore;          // Semaphore for print jobs (if using semaphores)
-    sem_t* scan_semaphore;           // Semaphore for scan jobs (if using semaphores)
-} execution_args;
+// Add these at the top after the includes
+#define COLOR_RED     "\033[31m"
+#define COLOR_GREEN   "\033[32m"
+#define COLOR_YELLOW  "\033[33m"
+#define COLOR_BLUE    "\033[34m"
+#define COLOR_CYAN    "\033[36m"
+#define COLOR_RESET   "\033[0m"
 
+// Log level colors
+#define DEBUG_COLOR   COLOR_CYAN
+#define INFO_COLOR    COLOR_BLUE
+#define WARNING_COLOR COLOR_YELLOW
+#define ERROR_COLOR   COLOR_RED
+#define SUCCESS_COLOR COLOR_GREEN
+
+// First define execution_summary struct
+typedef struct {
+    int total_jobs_processed;
+    int print_jobs_completed;
+    int scan_jobs_completed;
+    unsigned int total_time;
+    pthread_t thread_id;
+} execution_summary;
+
+// Then use it in execution_args struct
+typedef struct {
+    job* jobs;               
+    int* num_jobs;           
+    pthread_mutex_t* print_mutex;    
+    pthread_mutex_t* scan_mutex;     
+    sem_t* print_semaphore;          
+    sem_t* scan_semaphore;           
+    execution_summary* summary;
+} execution_args;
 
 // Function prototypes for execution logic
 
-void process_job(job* jobs, int* num_jobs, const char* job_type, unsigned int* elapsed_time, FILE* log_file, pthread_t thread_id);
+void process_job(job* jobs, int* num_jobs, const char* job_type, unsigned int* elapsed_time, FILE* log_file, pthread_t thread_id, execution_summary* summary);
 
 void* mutex_job_execution(void* arg);
 void* semaphore_job_execution(void* arg);

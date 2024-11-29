@@ -15,7 +15,7 @@ void get_current_time(char* buffer, size_t size)
 }
 
 // Generalized job execution function (handles both print and scan jobs)
-void process_job(job* jobs, int* num_jobs, const char* job_type, unsigned int* elapsed_time, FILE* log_file, pthread_t thread_id)
+void process_job(job* jobs, int* num_jobs, const char* job_type, unsigned int* elapsed_time, FILE* log_file, pthread_t thread_id, execution_summary* summary)
 {
     int selected_job_index = find_next_job(jobs, num_jobs, job_type, *elapsed_time);
     if (selected_job_index != -1)
@@ -30,6 +30,15 @@ void process_job(job* jobs, int* num_jobs, const char* job_type, unsigned int* e
 
         if (jobs[selected_job_index].page <= 0)
         {
+            // Update summary when job completes
+            if (strcmp(job_type, "print") == 0) {
+                summary->print_jobs_completed++;
+            } else {
+                summary->scan_jobs_completed++;
+            }
+            summary->total_jobs_processed++;
+            summary->total_time = *elapsed_time;
+
             // Remove completed job and shift remaining jobs
             for (int i = selected_job_index; i < (*num_jobs - 1); i++)
             {
@@ -87,18 +96,33 @@ void execute_all_jobs(job* jobs, int* num_jobs)
 
     pthread_t threads[6];
 
-    // Passing semaphore to threads via execution_args
-    execution_args args_mutex = {jobs_mutex, &num_jobs_mutex, &print_mutex, &scan_mutex, NULL, NULL};
-    execution_args args_semaphore = {jobs_semaphore, &num_jobs_semaphore, NULL, NULL, &print_semaphore, &scan_semaphore};
-    execution_args args_unsync = {jobs_unsync, &num_jobs_unsync, NULL, NULL, NULL, NULL};
+    // Create separate summaries for EACH thread of EACH type
+    execution_summary mutex_summary1 = {0, 0, 0, 0, 0};
+    execution_summary mutex_summary2 = {0, 0, 0, 0, 0};
+    
+    execution_summary semaphore_summary1 = {0, 0, 0, 0, 0};
+    execution_summary semaphore_summary2 = {0, 0, 0, 0, 0};
+    
+    execution_summary unsync_summary1 = {0, 0, 0, 0, 0};
+    execution_summary unsync_summary2 = {0, 0, 0, 0, 0};
 
-    // Create threads for each execution type
-    pthread_create(&threads[0], NULL, unsynced_job_execution, &args_unsync);
-    pthread_create(&threads[1], NULL, unsynced_job_execution, &args_unsync);
-    pthread_create(&threads[2], NULL, mutex_job_execution, &args_mutex);
-    pthread_create(&threads[3], NULL, mutex_job_execution, &args_mutex);
-    pthread_create(&threads[4], NULL, semaphore_job_execution, &args_semaphore); // Pass semaphore here
-    pthread_create(&threads[5], NULL, semaphore_job_execution, &args_semaphore); // Pass semaphore here
+    // Each thread gets its own summary pointer
+    execution_args args_mutex1 = {jobs_mutex, &num_jobs_mutex, &print_mutex, &scan_mutex, NULL, NULL, &mutex_summary1};
+    execution_args args_mutex2 = {jobs_mutex, &num_jobs_mutex, &print_mutex, &scan_mutex, NULL, NULL, &mutex_summary2};
+
+    execution_args args_semaphore1 = {jobs_semaphore, &num_jobs_semaphore, NULL, NULL, &print_semaphore, &scan_semaphore, &semaphore_summary1};
+    execution_args args_semaphore2 = {jobs_semaphore, &num_jobs_semaphore, NULL, NULL, &print_semaphore, &scan_semaphore, &semaphore_summary2};
+
+    execution_args args_unsync1 = {jobs_unsync, &num_jobs_unsync, NULL, NULL, NULL, NULL, &unsync_summary1};
+    execution_args args_unsync2 = {jobs_unsync, &num_jobs_unsync, NULL, NULL, NULL, NULL, &unsync_summary2};
+
+    // Create threads with their own summaries
+    pthread_create(&threads[0], NULL, unsynced_job_execution, &args_unsync1);
+    pthread_create(&threads[1], NULL, unsynced_job_execution, &args_unsync2);
+    pthread_create(&threads[2], NULL, mutex_job_execution, &args_mutex1);
+    pthread_create(&threads[3], NULL, mutex_job_execution, &args_mutex2);
+    pthread_create(&threads[4], NULL, semaphore_job_execution, &args_semaphore1);
+    pthread_create(&threads[5], NULL, semaphore_job_execution, &args_semaphore2);
 
     // Wait for all threads to finish
     for (int i = 0; i < 6; i++)

@@ -36,8 +36,8 @@ job* initialize_job(int* num_users, int* num_jobs)
             int job_index = (user * (*num_jobs)) + i;
             jobs[job_index].user_id = user + 1;
             strcpy(jobs[job_index].job_type, (rand() % 2) ? "print" : "scan");
-            jobs[job_index].page = rand() % 10 + 1;
-            jobs[job_index].arrival_time = rand() % 20 + 1;
+            jobs[job_index].page = rand() % 50 + 1;
+            jobs[job_index].arrival_time = rand() % MAX_TIME + 1;
         }
     }
 
