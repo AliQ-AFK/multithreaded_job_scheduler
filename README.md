@@ -239,3 +239,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### Planned Features:
 - **Cross-platform Support**: Extend compatibility to Windows and macOS natively.
 - **Dynamic Thread Pooling**: Implement a thread pool to optimize resource utilization for job processing.
+
+- **Json Logs**: Convert the Logs into a Json format.
