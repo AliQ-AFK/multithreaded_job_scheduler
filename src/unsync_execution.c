@@ -1,7 +1,7 @@
 #include "utils.h"
 #include "execution.h"
 
- "\033[32m"  // Green
+
 
 void* unsynced_job_execution(void* arg)
 {
