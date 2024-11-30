@@ -1,8 +1,7 @@
 #include "utils.h"
 #include "execution.h"
 
-// Remove or comment out any SUCCESS_COLOR definition if it exists in this file
-// #define SUCCESS_COLOR "\033[32m"  // Green
+ "\033[32m"  // Green
 
 void* unsynced_job_execution(void* arg)
 {
